@@ -2125,6 +2125,99 @@ export class SolanaFetchTokenDetailedReportTool extends Tool {
   }
 }
 
+export class SolanaSwapFluxBeamTool extends Tool {
+  name = "solana_swap_fluxbeam";
+  description = `This tool can be used to swap tokens using FluxBeam DEX.
+
+  Inputs ( input is a JSON string ):
+  outputMint: string, eg "So11111111111111111111111111111111111111112" (required)
+  inputAmount: number, eg 1 or 0.01 (required)
+  inputMint?: string, eg "USDC" or "So11111111111111111111111111111111111111112" (optional)
+  slippageBps?: number, eg 300 for 3% (optional)`;
+
+  constructor(private solanaKit: SolanaAgentKit) {
+    super();
+  }
+
+  protected async _call(input: string): Promise<string> {
+    try {
+      const parsedInput = JSON.parse(input);
+
+      const signature = await this.solanaKit.swapFluxBeam(
+        new PublicKey(parsedInput.outputMint),
+        parsedInput.inputAmount,
+        parsedInput.inputMint
+          ? new PublicKey(parsedInput.inputMint)
+          : new PublicKey("So11111111111111111111111111111111111111112"),
+        parsedInput.slippageBps,
+      );
+
+      return JSON.stringify({
+        status: "success",
+        message: "Swap executed successfully",
+        transaction: signature,
+        inputAmount: parsedInput.inputAmount,
+        inputToken: parsedInput.inputMint || "USDC",
+        outputToken: parsedInput.outputMint,
+      });
+    } catch (error: any) {
+      return JSON.stringify({
+        status: "error",
+        message: error.message,
+        code: error.code || "UNKNOWN_ERROR",
+      });
+    }
+  }
+}
+
+export class SolanaCreatePoolFluxBeamTool extends Tool {
+  name = "solana_create_pool_fluxbeam";
+  description = `This tool can be used to create a new liquidity pool using FluxBeam.
+
+  Inputs ( input is a JSON string ):
+  tokenA: string, eg "So11111111111111111111111111111111111111112" (required)
+  tokenAAmount: number, eg 100 (required)
+  tokenB: string, eg "SENDdRQtYMWaQrBroBrJ2Q53fgVuq95CV9UPGEvpCxa" (required)
+  tokenBAmount: number, eg 200 (required)`;
+
+  constructor(private solanaKit: SolanaAgentKit) {
+    super();
+  }
+
+  protected async _call(input: string): Promise<string> {
+    try {
+      const parsedInput = JSON.parse(input);
+      const tokenA = new PublicKey(parsedInput.tokenA);
+      const tokenAAmount = parsedInput.tokenAAmount;
+      const tokenB = new PublicKey(parsedInput.tokenB);
+      const tokenBAmount = parsedInput.tokenBAmount;
+
+      const signature = await this.solanaKit.createPoolFluxBeam(
+        tokenA,
+        tokenAAmount,
+        tokenB,
+        tokenBAmount,
+      );
+
+      return JSON.stringify({
+        status: "success",
+        message: "Pool created successfully",
+        transaction: signature,
+        tokenA: parsedInput.tokenA,
+        tokenAAmount: parsedInput.tokenAAmount,
+        tokenB: parsedInput.tokenB,
+        tokenBAmount: parsedInput.tokenBAmount,
+      });
+    } catch (error: any) {
+      return JSON.stringify({
+        status: "error",
+        message: error.message,
+        code: error.code || "UNKNOWN_ERROR",
+      });
+    }
+  }
+}
+
 export function createSolanaTools(solanaKit: SolanaAgentKit) {
   return [
     new SolanaBalanceTool(solanaKit),
@@ -2179,5 +2272,7 @@ export function createSolanaTools(solanaKit: SolanaAgentKit) {
     new SolanaFetchTokenDetailedReportTool(solanaKit),
     new SolanaPerpOpenTradeTool(solanaKit),
     new SolanaPerpCloseTradeTool(solanaKit),
+    new SolanaSwapFluxBeamTool(solanaKit),
+    new SolanaCreatePoolFluxBeamTool(solanaKit),
   ];
 }

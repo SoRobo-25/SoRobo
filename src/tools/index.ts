@@ -47,3 +47,6 @@ export * from "./tensor_trade";
 export * from "./trade";
 export * from "./transfer";
 export * from "./withdraw_all";
+
+export * from "./fluxbeam_swap";
+export * from "./fluxbeam_create_pool";
