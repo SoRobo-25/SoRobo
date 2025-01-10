@@ -20,6 +20,10 @@ import {
   raydiumCreateAmmV4,
   raydiumCreateClmm,
   raydiumCreateCpmm,
+  raydiumAddLiquidityAmm,
+  raydiumRemoveLiquidityAmm,
+  raydiumOpenPositionClmm,
+  raydiumClosePositionClmm,
   registerDomain,
   request_faucet_funds,
   trade,
@@ -499,6 +503,39 @@ export class SolanaAgentKit {
       lotSize,
       tickSize,
     );
+  }
+
+  async raydiumAddLiquidityAmm(
+    poolId: string,
+    inputAmount: Decimal
+  ): Promise<string> {
+    return raydiumAddLiquidityAmm(this, poolId, inputAmount);
+  }
+
+  async raydiumRemoveLiquidityAmm(
+    poolId: string,
+    withdrawLpAmount: BN
+  ): Promise<string> {
+    return raydiumRemoveLiquidityAmm(this, poolId, withdrawLpAmount);
+  }
+
+  async raydiumOpenPositionClmm(
+    poolId: string,
+    inputAmount: Decimal,
+    startPrice: Decimal,
+    endPrice: Decimal
+  ): Promise<string> {
+    return raydiumOpenPositionClmm(
+      this,
+      poolId,
+      inputAmount,
+      startPrice,
+      endPrice
+    );
+  }
+
+  async raydiumClosePositionClmm(poolId: string): Promise<string> {
+    return raydiumClosePositionClmm(this, poolId);
   }
 
   async manifestCreateMarket(
