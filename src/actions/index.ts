@@ -30,6 +30,10 @@ import launchPumpfunTokenAction from "./launchPumpfunToken";
 import getWalletAddressAction from "./getWalletAddress";
 import flashOpenTradeAction from "./flashOpenTrade";
 import flashCloseTradeAction from "./flashCloseTrade";
+import castGovernanceVoteAction from "./realm/castVote";
+import delegateVotingPowerAction from "./realm/getVotingPower";
+import getVotingOutcomeAction from "./realm/getVotingOutcome";
+import getVotingPowerAction from "./realm/delegateVotingPower";
 
 export const ACTIONS = {
   WALLET_ADDRESS_ACTION: getWalletAddressAction,
@@ -65,6 +69,10 @@ export const ACTIONS = {
   LAUNCH_PUMPFUN_TOKEN_ACTION: launchPumpfunTokenAction,
   FLASH_OPEN_TRADE_ACTION: flashOpenTradeAction,
   FLASH_CLOSE_TRADE_ACTION: flashCloseTradeAction,
+  CAST_VOTE_ACTION: castGovernanceVoteAction,
+  GET_VOTING_POWER_ACTION: getVotingPowerAction,
+  DELEGATE_VOTING_POWER_ACTION: delegateVotingPowerAction,
+  GET_VOTING_OUTCOME_ACTION: getVotingOutcomeAction,
 };
 
 export type { Action, ActionExample, Handler } from "../types/action";

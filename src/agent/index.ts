@@ -3,7 +3,7 @@ import { BN } from "@coral-xyz/anchor";
 import bs58 from "bs58";
 import Decimal from "decimal.js";
 import { DEFAULT_OPTIONS } from "../constants";
-import { Config, TokenCheck } from "../types";
+import { Config, TokenCheck, VotingPowerInfo } from "../types";
 import {
   deploy_collection,
   deploy_token,
@@ -63,6 +63,10 @@ import {
   fetchPythPriceFeedID,
   flashOpenTrade,
   flashCloseTrade,
+  castGovernanceVote,
+  getVotingPower,
+  delegateVotingPower,
+  getVotingOutcome,
 } from "../tools";
 import {
   CollectionDeployment,
@@ -92,6 +96,7 @@ import { create_proposal } from "../tools/squads_multisig/create_proposal";
 import { approve_proposal } from "../tools/squads_multisig/approve_proposal";
 import { execute_transaction } from "../tools/squads_multisig/execute_proposal";
 import { reject_proposal } from "../tools/squads_multisig/reject_proposal";
+import { Proposal } from "@solana/spl-governance";
 
 /**
  * Main class for interacting with Solana blockchain
@@ -654,5 +659,32 @@ export class SolanaAgentKit {
     transactionIndex?: number | bigint,
   ): Promise<string> {
     return execute_transaction(this, transactionIndex);
+  }
+
+  async castGovernanceVote(
+    realmAccount: PublicKey,
+    proposalAccount: PublicKey,
+    voteType: "yes" | "no",
+  ): Promise<string> {
+    return castGovernanceVote(this, realmAccount, proposalAccount, voteType);
+  }
+
+  async getVotingPower(
+    realm: PublicKey,
+    governingTokenMint: PublicKey,
+  ): Promise<VotingPowerInfo> {
+    return getVotingPower(this, realm, governingTokenMint);
+  }
+
+  async delegateVotingPower(
+    realm: PublicKey,
+    governingTokenMint: PublicKey,
+    delegate: PublicKey,
+  ): Promise<string> {
+    return delegateVotingPower(this, realm, governingTokenMint, delegate);
+  }
+
+  async getVotingOutcome(proposal: PublicKey): Promise<Proposal> {
+    return getVotingOutcome(this, proposal);
   }
 }
