@@ -1,371 +1,46 @@
 import {
-  AccountState,
   AuthorityType,
-  ExtensionType,
-  TOKEN_2022_PROGRAM_ID,
   createAssociatedTokenAccountInstruction,
-  createEnableRequiredMemoTransfersInstruction,
-  createInitializeDefaultAccountStateInstruction,
-  createInitializeImmutableOwnerInstruction,
-  createInitializeInstruction,
-  createInitializeInterestBearingMintInstruction,
-  createInitializeMetadataPointerInstruction,
-  createInitializeMintCloseAuthorityInstruction,
-  createInitializeMintInstruction,
-  createInitializeNonTransferableMintInstruction,
-  createInitializePermanentDelegateInstruction,
-  createInitializeTransferFeeConfigInstruction,
   createMintToInstruction,
   createSetAuthorityInstruction,
-  createThawAccountInstruction,
   getAssociatedTokenAddressSync,
-  getMintLen,
+  TOKEN_2022_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
 import {
-  ComputeBudgetProgram,
   PublicKey,
-  SystemProgram,
+  ComputeBudgetProgram,
   Transaction,
-  TransactionInstruction,
+  Keypair,
 } from "@solana/web3.js";
 import { SolanaAgentKit } from "../agent";
-import { pack } from "@solana/spl-token-metadata";
-import { DataV2 } from "@metaplex-foundation/mpl-token-metadata";
-import { FEE_ACCOUNT } from "../constants";
+import { sendTransaction, signTransaction } from "../utils/FluxbeamClient";
 
-export class CreateMintV1 {
-  name: string;
-  symbol: string;
-  metadataUri: string;
-  decimals: number;
-  totalSupply: bigint;
-
-  mintAuthority: PublicKey;
-  freezeAuthority: PublicKey | null;
-
-  sellerFeeBasisPoints: number = 0;
-
-  //Do we mint the total supply to the user
-  mintTotalSupply: boolean;
-
-  creators: [] | null = null;
-
-  constructor(
-    name: string,
-    symbol: string,
-    metadataUri: string,
-    totalSupply: bigint,
-    mintAuthority: PublicKey,
-    freezeAuthority: PublicKey | null,
-    decimals = 6,
-    mintTotalSupply = true,
-  ) {
-    this.name = name;
-    this.symbol = symbol;
-    this.metadataUri = metadataUri;
-    this.totalSupply = totalSupply;
-    this.decimals = decimals;
-    this.mintTotalSupply = mintTotalSupply;
-    this.mintAuthority = mintAuthority;
-    this.freezeAuthority = freezeAuthority;
-  }
-
-  setSellerFeeBasisPoints(bp: number) {
-    this.sellerFeeBasisPoints = bp;
-  }
-
-  setCreators(creators: []) {
-    this.creators = creators;
-  }
-}
-
-export class CreateMint extends CreateMintV1 {
-  extensions: ExtensionType[] = [];
-  extensionConfig = {};
-
-  metadata: any;
-
-  setMetadata(meta: any) {
-    this.metadata = meta;
-  }
-
-  metadataLength(): number {
-    if (!this.metadata) {
-      return 0;
-    }
-
-    return (
-      pack({
-        additionalMetadata: this.metadata?.additionalMetadata || [],
-        mint: PublicKey.default,
-        symbol: this.metadata.symbol,
-        name: this.metadata.name,
-        uri: this.metadata.uri,
-      }).length + 4
-    );
-  }
-
-  addExtension(ext: ExtensionType, config: object = {}) {
-    this.extensions.push(ext);
-    //@ts-ignore
-    this.extensionConfig[ext] = config;
-  }
-}
-
-export async function getCreateMintTransaction(
-  agent: SolanaAgentKit,
-  owner: PublicKey,
-  tokenMint: PublicKey,
-  config: CreateMint,
-  priorityFee: number,
-  metadataCID: string,
-) {
-  const mintLen = getMintLen(config.extensions);
-  const mintLamports = await agent.connection.getMinimumBalanceForRentExemption(
-    mintLen + config.metadataLength(),
-  );
-
-  const ata = getAssociatedTokenAddressSync(
-    tokenMint,
-    owner,
-    true,
-    TOKEN_2022_PROGRAM_ID,
-  );
-
-  const ON_CHAIN_METADATA = {
-    name: config.name,
-    symbol: config.symbol,
-    uri: config.metadataUri,
-    sellerFeeBasisPoints: 0,
-    uses: null,
-    creators: null,
-    collection: null,
-  } as DataV2;
-
-  const unitLimit = 120_000;
-  const unitPrice = Math.floor(priorityFee / unitLimit);
-  const txn = new Transaction().add(
-    ComputeBudgetProgram.setComputeUnitLimit({ units: unitLimit }),
-    ComputeBudgetProgram.setComputeUnitPrice({ microLamports: unitPrice }),
-    SystemProgram.createAccount({
-      fromPubkey: owner,
-      newAccountPubkey: tokenMint,
-      space: mintLen,
-      lamports: mintLamports,
-      programId: TOKEN_2022_PROGRAM_ID,
-    }),
-    SystemProgram.transfer({
-      fromPubkey: owner,
-      toPubkey: FEE_ACCOUNT,
-      lamports: 20000000,
-    }),
-    new TransactionInstruction({
-      keys: [],
-      programId: new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr"),
-      data: Buffer.from(metadataCID),
-    }),
-  );
-
-  let isDefaultFrozen = false;
-  config.extensions.forEach((ext: string | number) => {
-    //@ts-ignore
-    const cfg = config.extensionConfig[ext];
-    // eslint-disable-next-line no-console
-    console.log(`${ext}`, cfg);
-
-    switch (ext) {
-      case ExtensionType.TransferFeeConfig:
-        ON_CHAIN_METADATA.sellerFeeBasisPoints = cfg.feeBasisPoints; //Update so it reflects same as royalties
-        txn.add(
-          createInitializeTransferFeeConfigInstruction(
-            tokenMint,
-            cfg.transfer_fee_config_authority
-              ? cfg.transfer_fee_config_authority
-              : config.mintAuthority, //Config Auth
-            cfg.withdraw_withheld_authority
-              ? cfg.withdraw_withheld_authority
-              : config.mintAuthority, //Withdraw Auth
-            cfg.feeBasisPoints,
-            cfg.maxFee,
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      case ExtensionType.InterestBearingConfig:
-        txn.add(
-          createInitializeInterestBearingMintInstruction(
-            tokenMint,
-            owner, //Rate Auth
-            cfg.rate * 100,
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      case ExtensionType.PermanentDelegate:
-        txn.add(
-          createInitializePermanentDelegateInstruction(
-            tokenMint,
-            new PublicKey(cfg.address),
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      case ExtensionType.NonTransferable:
-        txn.add(
-          createInitializeNonTransferableMintInstruction(
-            tokenMint,
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      case ExtensionType.ImmutableOwner:
-        txn.add(
-          createInitializeImmutableOwnerInstruction(
-            tokenMint,
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      case ExtensionType.MemoTransfer:
-        txn.add(
-          createEnableRequiredMemoTransfersInstruction(
-            tokenMint,
-            owner,
-            [],
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        if (config.mintTotalSupply) {
-          txn.add(
-            new TransactionInstruction({
-              keys: [{ pubkey: owner, isSigner: true, isWritable: true }],
-              data: Buffer.from("Mint To Memo", "utf-8"),
-              programId: new PublicKey(
-                "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
-              ),
-            }),
-          );
-        }
-        break;
-      case ExtensionType.DefaultAccountState:
-        isDefaultFrozen = cfg.state === AccountState.Frozen;
-        txn.add(
-          createInitializeDefaultAccountStateInstruction(
-            tokenMint,
-            cfg.state,
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      case ExtensionType.MintCloseAuthority:
-        txn.add(
-          createInitializeMintCloseAuthorityInstruction(
-            tokenMint,
-            config.mintAuthority,
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      case ExtensionType.MetadataPointer:
-        txn.add(
-          createInitializeMetadataPointerInstruction(
-            tokenMint,
-            config.mintAuthority,
-            tokenMint,
-            TOKEN_2022_PROGRAM_ID,
-          ),
-        );
-        break;
-      default:
-        console.error("Unsupported extension", ext);
-        break;
-    }
-  });
-
-  //Init the mint
-  txn.add(
-    createInitializeMintInstruction(
-      tokenMint,
-      config.decimals,
-      config.mintAuthority,
-      config.freezeAuthority,
-      TOKEN_2022_PROGRAM_ID,
-    ),
-  );
-
-  if (config.metadata) {
-    txn.add(
-      createInitializeInstruction({
-        programId: TOKEN_2022_PROGRAM_ID,
-        metadata: tokenMint,
-        updateAuthority: config.mintAuthority,
-        mint: tokenMint,
-        mintAuthority: config.mintAuthority,
-        name: config.metadata.name,
-        symbol: config.metadata.symbol,
-        uri: config.metadata.uri,
-      }),
-    );
-  }
-
-  if (config.mintTotalSupply) {
-    txn.add(
-      createAssociatedTokenAccountInstruction(
-        owner,
-        ata,
-        owner,
-        tokenMint,
-        TOKEN_2022_PROGRAM_ID,
-      ),
-    );
-
-    if (isDefaultFrozen) {
-      txn.add(
-        createThawAccountInstruction(
-          ata,
-          tokenMint,
-          owner,
-          [],
-          TOKEN_2022_PROGRAM_ID,
-        ),
-      );
-    }
-
-    txn.add(
-      createMintToInstruction(
-        tokenMint,
-        ata,
-        owner,
-        config.totalSupply,
-        [],
-        TOKEN_2022_PROGRAM_ID,
-      ),
-    );
-  }
-
-  const bhash = await agent.connection.getLatestBlockhash("confirmed");
-  txn.feePayer = owner;
-  txn.recentBlockhash = bhash.blockhash;
-
-  // Sign and send transaction
-  const signature = await agent.connection.sendTransaction(txn, [agent.wallet]);
-
-  return signature;
-}
-
-export async function getMintToTransaction(
+/**
+ * Mints tokens to the associated token account of a given owner.
+ * If the associated token account does not exist, it is created.
+ *
+ * @param {SolanaAgentKit} agent - SolanaAgentKit instance
+ * @param {PublicKey} owner - The public key of the token account owner.
+ * @param {PublicKey} tokenMint - The public key of the token mint account.
+ * @param {bigint} amount - The amount of tokens to mint.
+ * @param {boolean} [v2=true] - Whether to use the Token 2022 program.
+ * @returns {Promise<string>} - The transaction signature.
+ */
+export async function fluxbeamMintToAccount(
   agent: SolanaAgentKit,
   owner: PublicKey,
   tokenMint: PublicKey,
   amount: bigint,
-  program = TOKEN_2022_PROGRAM_ID,
+  v2: boolean = true,
 ) {
-  const txn = new Transaction();
+  const program = v2 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID;
+  const transaction = new Transaction();
   const ata = getAssociatedTokenAddressSync(tokenMint, owner, true, program);
 
   const dstIfo = await agent.connection.getAccountInfo(ata, "confirmed");
   if (!dstIfo) {
-    txn.add(
+    transaction.add(
       createAssociatedTokenAccountInstruction(
         owner,
         ata,
@@ -376,34 +51,49 @@ export async function getMintToTransaction(
     );
   }
 
-  txn.add(createMintToInstruction(tokenMint, ata, owner, amount, [], program));
+  transaction.add(
+    createMintToInstruction(tokenMint, ata, owner, amount, [], program),
+  );
 
-  const { blockhash } = await agent.connection.getLatestBlockhash("confirmed");
-  txn.feePayer = owner;
-  txn.recentBlockhash = blockhash;
-  // Sign and send transaction
-  const signature = await agent.connection.sendTransaction(txn, [agent.wallet]);
+  const txn = await signTransaction(agent, transaction);
 
-  return signature;
+  const response = await sendTransaction(agent, txn);
+
+  return response.signature;
 }
 
-export async function getSetAuthorityTransaction(
+/**
+ * Sets a new authority for a given mint account.
+ *
+ * @param {SolanaAgentKit} agent -SolanaAgentKit instance
+ * @param {PublicKey} owner - The public key of the current authority.
+ * @param {PublicKey} mint - The public key of the mint account.
+ * @param {AuthorityType} authority - The type of authority to set (e.g., Mint, Freeze, Close).
+ * @param {PublicKey|null} newAuthority - The public key of the new authority, or null to revoke.
+ * @param {boolean} [v2=true] - Whether to use the Token 2022 program.
+ * @param {number} [priorityFee=100_000_000] - The priority fee for the transaction (in microLamports).
+ * @param {Keypair[]} [additional_signers=[]] - Additional signers required for the transaction.
+ * @returns {Promise<string>} - The transaction signature.
+ */
+export async function fluxbeamSetAuthority(
   agent: SolanaAgentKit,
   owner: PublicKey,
   mint: PublicKey,
   authority: AuthorityType,
   newAuthority: PublicKey | null,
-  programID = TOKEN_2022_PROGRAM_ID,
-  priorityFee: number = 100_000_000_000,
+  v2: boolean = true,
+  priorityFee: number = 100_000_000,
+  additional_signers: Keypair[] = [],
 ) {
-  const txn = new Transaction();
-  txn.add(
+  const programID = v2 ? TOKEN_2022_PROGRAM_ID : TOKEN_PROGRAM_ID;
+  const transaction = new Transaction();
+  transaction.add(
     ComputeBudgetProgram.setComputeUnitLimit({ units: 10_000 }),
     ComputeBudgetProgram.setComputeUnitPrice({
       microLamports: Math.floor(priorityFee / 10_000),
     }),
   );
-  txn.add(
+  transaction.add(
     createSetAuthorityInstruction(
       mint,
       owner,
@@ -413,31 +103,42 @@ export async function getSetAuthorityTransaction(
       programID,
     ),
   );
+  const txn = await signTransaction(agent, transaction, additional_signers);
 
-  const { blockhash } = await agent.connection.getLatestBlockhash("confirmed");
-  txn.feePayer = owner;
-  txn.recentBlockhash = blockhash;
+  const response = await sendTransaction(agent, txn);
 
-  const signature = await agent.connection.sendTransaction(txn, [agent.wallet]);
-
-  return signature;
+  return response.signature;
 }
 
-export async function getRevokeAuthorityTransaction(
+/**
+ * Revokes an authority from a given mint account by setting it to null.
+ *
+ * @param {SolanaAgentKit} agent - SolanaAgentKit instance
+ * @param {PublicKey} owner - The public key of the current authority.
+ * @param {PublicKey} mint - The public key of the mint account.
+ * @param {AuthorityType} authority - The type of authority to revoke (e.g., Mint, Freeze, Close).
+ * @param {boolean} [v2=true] - Whether to use the Token 2022 program.
+ * @param {number} [priorityFee=100_000_000] - The priority fee for the transaction (in microLamports).
+ * @param {Keypair[]} [additional_signers=[]] - Additional signers required for the transaction.
+ * @returns {Promise<string>} - The transaction signature.
+ */
+export function fluxbeamRevokeAuthority(
   agent: SolanaAgentKit,
   owner: PublicKey,
   mint: PublicKey,
   authority: AuthorityType,
-  programID = TOKEN_2022_PROGRAM_ID,
-  priorityFee: number = 100_000_000_000,
+  v2: boolean = true,
+  priorityFee: number = 100_000_000,
+  additional_signers: Keypair[] = [],
 ) {
-  return getSetAuthorityTransaction(
+  return fluxbeamSetAuthority(
     agent,
     owner,
     mint,
     authority,
     null,
-    programID,
+    v2,
     priorityFee,
+    additional_signers,
   );
 }

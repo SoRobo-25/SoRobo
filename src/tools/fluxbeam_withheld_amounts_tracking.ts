@@ -8,7 +8,12 @@ import {
   TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
 import { ComputeBudgetProgram } from "@solana/web3.js";
-import { accountExists, getAssociatedTokenPDA } from "../utils/fluxbeam_utils";
+import {
+  accountExists,
+  getAssociatedTokenPDA,
+  sendTransaction,
+  signTransaction,
+} from "../utils/FluxbeamClient";
 import { PublicKey, Transaction } from "@solana/web3.js";
 
 /**
@@ -19,7 +24,7 @@ import { PublicKey, Transaction } from "@solana/web3.js";
  * @param authority
  * @param srcAccounts
  */
-export async function getClaimWitheldTokens(
+export async function fluxbeamGetClaimWitheldTokens(
   agent: SolanaAgentKit,
   mint: PublicKey,
   authority: PublicKey,
@@ -35,9 +40,6 @@ export async function getClaimWitheldTokens(
       payer || agent.wallet_address,
       TOKEN_2022_PROGRAM_ID,
     );
-
-    const { blockhash } =
-      await agent.connection.getLatestBlockhash("confirmed");
 
     if (!(await accountExists(agent, dstAcc))) {
       const transaction = new Transaction().add(
@@ -62,11 +64,11 @@ export async function getClaimWitheldTokens(
         ),
       );
 
-      transaction.feePayer = payer || agent.wallet_address;
-      transaction.recentBlockhash = blockhash;
-      const signature = await agent.connection.sendTransaction(transaction, [
-        agent.wallet,
-      ]);
+      // Sign and send the transaction
+      const signature = await signTransaction(agent, transaction);
+
+      await sendTransaction(agent, signature);
+
       signatures.push(signature);
     } else {
       const transaction = new Transaction();
@@ -80,12 +82,11 @@ export async function getClaimWitheldTokens(
           TOKEN_2022_PROGRAM_ID,
         ),
       );
-      transaction.feePayer = payer || agent.wallet_address;
-      transaction.recentBlockhash = blockhash;
+      // Sign and send the transaction
+      const signature = await signTransaction(agent, transaction);
 
-      const signature = await agent.connection.sendTransaction(transaction, [
-        agent.wallet,
-      ]);
+      await sendTransaction(agent, signature);
+
       signatures.push(signature);
     }
 
@@ -101,12 +102,11 @@ export async function getClaimWitheldTokens(
         ),
       );
 
-      transaction.feePayer = payer || agent.wallet_address;
-      transaction.recentBlockhash = blockhash;
+      // Sign and send the transaction
+      const signature = await signTransaction(agent, transaction);
 
-      const signature = await agent.connection.sendTransaction(transaction, [
-        agent.wallet,
-      ]);
+      await sendTransaction(agent, signature);
+
       signatures.push(signature);
     }
     return signatures;
@@ -122,7 +122,7 @@ export async function getClaimWitheldTokens(
  * @param payer
  * @returns Transaction signature
  */
-export async function getClaimWitheldTokensFromMint(
+export async function fluxbeamGetClaimWitheldTokensFromMint(
   agent: SolanaAgentKit,
   mint: PublicKey,
   payer?: PublicKey,
@@ -164,16 +164,10 @@ export async function getClaimWitheldTokensFromMint(
       ),
     );
 
-    // Set transaction parameters
-    const { blockhash } =
-      await agent.connection.getLatestBlockhash("confirmed");
-    transaction.feePayer = payer || agent.wallet_address;
-    transaction.recentBlockhash = blockhash;
+    // Sign and send the transaction
+    const signature = await signTransaction(agent, transaction);
 
-    // Sign and send transaction
-    const signature = await agent.connection.sendTransaction(transaction, [
-      agent.wallet,
-    ]);
+    await sendTransaction(agent, signature);
 
     return signature;
   } catch (error: any) {
@@ -188,11 +182,10 @@ export async function getClaimWitheldTokensFromMint(
  * @param srcAccounts Source accounts to harvest from
  * @returns Array of transaction signatures
  */
-export async function getClaimWithheldTokensToMint(
+export async function fluxbeamGetClaimWithheldTokensToMint(
   agent: SolanaAgentKit,
   mint: PublicKey,
   srcAccounts: PublicKey[],
-  payer?: PublicKey,
 ) {
   try {
     const signatures = [];
@@ -205,14 +198,10 @@ export async function getClaimWithheldTokensToMint(
         ),
       );
 
-      const { blockhash } =
-        await agent.connection.getLatestBlockhash("confirmed");
-      transaction.feePayer = payer || agent.wallet_address;
-      transaction.recentBlockhash = blockhash;
-      // Sign and send transaction
-      const signature = await agent.connection.sendTransaction(transaction, [
-        agent.wallet,
-      ]);
+      // Sign and send the transaction
+      const signature = await signTransaction(agent, transaction);
+
+      await sendTransaction(agent, signature);
 
       signatures.push(signature);
     }

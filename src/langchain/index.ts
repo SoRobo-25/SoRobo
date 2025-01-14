@@ -31,7 +31,7 @@ export * from "./voltr";
 export * from "./mayan";
 export * from "./allora";
 export * from "./switchboard";
-
+export * from "./fluxbeam"
 import type { SolanaAgentKit } from "../agent";
 import {
   SolanaBalanceTool,
@@ -254,5 +254,23 @@ export function createSolanaTools(solanaKit: SolanaAgentKit) {
     new SolanaAlloraGetAllTopics(solanaKit),
     new SolanaAlloraGetInferenceByTopicId(solanaKit),
     new SolanaAlloraGetPriceInference(solanaKit),
+    new SolanaFluxbeamBridgeTokensTool(solanaKit),
+    new SolanaFluxbeamBurnTokenTool(solanaKit),
+    new SolanaFluxbeamCreatePoolTool(solanaKit),
+    new SolanaFluxbeamCreatePoolTool(solanaKit),
+    new SolanaFluxbeamSubmitFeeClaimTool(solanaKit),
+    new SolanaFluxbeamSubmitFeePaymentTool(solanaKit),
+    new SolanaFluxbeamUpdateMetadataTool(solanaKit),
+    new SolanaFluxbeamUpdateV2MetadataTool(solanaKit),
+    new SolanaFluxbeamMintToAccountTool(solanaKit),
+    new SolanaFluxbeamSetAuthorityTool(solanaKit),
+    new SolanaFluxbeamRevokeAuthorityTool(solanaKit),
+    new SolanaFluxbeamCreateMintV1Tool(solanaKit),
+    new SolanaFluxbeamCreateMintV2Tool(solanaKit),
+    new SolanaFluxbeamGetClaimWithheldTokensFromMintTool(solanaKit),
+    new SolanaFluxbeamGetClaimWithheldTokensToMintTool(solanaKit),
+    new SolanaFluxbeamGetClaimWithheldTokensTool(solanaKit),
+    new SolanaFluxbeamWrapSOLTool(solanaKit),
+    new SolanaFluxbeamUnwrapSOLTool(solanaKit),
   ];
 }

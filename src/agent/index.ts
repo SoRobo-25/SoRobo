@@ -1,4 +1,4 @@
-import { Connection, Keypair, PublicKey } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 import bs58 from "bs58";
 import Decimal from "decimal.js";
@@ -8,6 +8,8 @@ import {
   StoreInitOptions,
 } from "@3land/listings-sdk/dist/types/implementation/implementationTypes";
 import { DEFAULT_OPTIONS } from "../constants";
+import { DEFAULT_OPTIONS, TOKENS } from "../constants";
+import { Config, FluxbeamServerResponse, TokenCheck } from "../types";
 import {
   deploy_collection,
   deploy_token,
@@ -122,6 +124,23 @@ import {
   getPriceInference,
   getAllTopics,
   getInferenceByTopicId,
+  fluxbeamBurnToken,
+  fluxBeamCreatePool,
+  fluxbeamSubmitFeePayment,
+  fluxbeamSubmitFeeClaim,
+  fluxbeamUpdateV1Metadata,
+  fluxbeamUpdateV2Metadata,
+  fluxBeamSwap,
+  fluxbeamGetClaimWithheldTokensToMint,
+  fluxbeamGetClaimWitheldTokensFromMint,
+  fluxbeamGetClaimWitheldTokens,
+  fluxbeamCreateMintV2,
+  fluxbeamCreateMintV1,
+  fluxbeamTransferSol,
+  fluxbeamTransferSplToken,
+  fluxbeamUnwrapSOL,
+  fluxbeamWrapSOL,
+  ExtensionConfig,
 } from "../tools";
 import {
   Config,
@@ -147,6 +166,18 @@ import {
   SearchAssetsRpcInput,
 } from "@metaplex-foundation/digital-asset-standard-api";
 import { AlloraInference, AlloraTopic } from "@alloralabs/allora-sdk";
+import {
+  AuthorityType,
+  ExtensionType,
+  TOKEN_2022_PROGRAM_ID,
+} from "@solana/spl-token";
+import {
+  fluxbeamMintToAccount,
+  fluxbeamRevokeAuthority,
+  fluxbeamSetAuthority,
+} from "../tools/fluxbeam_token_minting_controls";
+import { KeypairSigner } from "@metaplex-foundation/umi";
+import { Chain, fluxbeamBridgeTokens } from "../tools/fluxbeam_bridge_tokens";
 
 /**
  * Main class for interacting with Solana blockchain
@@ -1075,5 +1106,265 @@ export class SolanaAgentKit {
     crossbarUrl: string,
   ): Promise<string> {
     return simulate_switchboard_feed(this, feed, crossbarUrl);
+  }
+  async fluxbeamBridgeTokens(
+    agent: SolanaAgentKit,
+    destination: Chain,
+    amount: number,
+    destinationWalletAddress: string,
+    fromToken: string,
+    toToken: string,
+    gasDrop?: number,
+  ) {
+    return fluxbeamBridgeTokens(
+      agent,
+      destination,
+      destinationWalletAddress,
+      fromToken,
+      toToken,
+      amount,
+      gasDrop,
+    );
+  }
+  async fluxbeamBurnToken(
+    agent: SolanaAgentKit,
+    mint: PublicKey,
+    amount: number,
+    v2: boolean = true,
+  ): Promise<string> {
+    return fluxbeamBurnToken(agent, mint, amount, v2);
+  }
+  async fluxbeamCreatePool(
+    agent: SolanaAgentKit,
+    token_a: PublicKey,
+    token_a_amount: number,
+    token_b: PublicKey,
+    token_b_amount: number,
+  ): Promise<string> {
+    return fluxBeamCreatePool(
+      agent,
+      token_a,
+      token_a_amount,
+      token_b,
+      token_b_amount,
+    );
+  }
+  async fluxbeamSubmitFeePayment(
+    agent: SolanaAgentKit,
+    quoteReq: { quote: any },
+    priorityFee: number,
+  ): Promise<string> {
+    return fluxbeamSubmitFeePayment(agent, quoteReq, priorityFee);
+  }
+
+  async fluxbeamSubmitFeeClaim(
+    agent: SolanaAgentKit,
+    payer: PublicKey,
+    mint: PublicKey,
+    priorityFee: number,
+  ): Promise<string> {
+    return fluxbeamSubmitFeeClaim(agent, payer, mint, priorityFee);
+  }
+  async fluxbeamUpdateV1Metadata(
+    agent: SolanaAgentKit,
+    mint: PublicKey,
+    name: string,
+    symbol: string,
+    uri: string,
+  ): Promise<string> {
+    return fluxbeamUpdateV1Metadata(agent, mint, name, symbol, uri);
+  }
+  async fluxbeamUpdateV2Metadata(
+    agent: SolanaAgentKit,
+    mint: PublicKey,
+    name: string,
+    symbol: string,
+    uri: string,
+  ): Promise<string> {
+    return fluxbeamUpdateV2Metadata(agent, mint, name, symbol, uri);
+  }
+  async fluxbeamMintToAccount(
+    agent: SolanaAgentKit,
+    owner: PublicKey,
+    tokenMint: PublicKey,
+    amount: bigint,
+    v2: boolean,
+  ): Promise<string> {
+    return fluxbeamMintToAccount(agent, owner, tokenMint, amount, v2);
+  }
+  async fluxbeamSetAuthority(
+    agent: SolanaAgentKit,
+    owner: PublicKey,
+    mint: PublicKey,
+    authority: AuthorityType,
+    newAuthority: PublicKey | null,
+    v2: boolean = true,
+    priorityFee: number = 100_000_000_000,
+    additional_signers: Keypair[] = [],
+  ): Promise<string> {
+    return fluxbeamSetAuthority(
+      agent,
+      owner,
+      mint,
+      authority,
+      newAuthority,
+      v2,
+      priorityFee,
+      additional_signers,
+    );
+  }
+  fluxbeamRevokeAuthority(
+    agent: SolanaAgentKit,
+    owner: PublicKey,
+    mint: PublicKey,
+    authority: AuthorityType,
+    v2: boolean = true,
+    priorityFee: number = 100_000_000_000,
+    additional_signers: Keypair[] = [],
+  ): Promise<string> {
+    return fluxbeamRevokeAuthority(
+      agent,
+      owner,
+      mint,
+      authority,
+      v2,
+      priorityFee,
+      additional_signers,
+    );
+  }
+  async fluxBeamSwap(
+    agent: SolanaAgentKit,
+    inputMint: PublicKey = TOKENS.USDC,
+    outputMint: PublicKey,
+    inputAmount: number,
+    slippageBps: number = DEFAULT_OPTIONS.SLIPPAGE_BPS,
+  ): Promise<string> {
+    return fluxBeamSwap(agent, inputMint, outputMint, inputAmount, slippageBps);
+  }
+  async fluxbeamTransferSplToken(
+    agent: SolanaAgentKit,
+    mint: PublicKey,
+    dstOwner: PublicKey,
+    amount: number,
+    v2: boolean = true,
+    allowOwnerOffCurve = false,
+  ): Promise<string> {
+    return fluxbeamTransferSplToken(
+      agent,
+      mint,
+      dstOwner,
+      amount,
+      v2,
+      allowOwnerOffCurve,
+    );
+  }
+
+  async fluxbeamTransferSol(
+    agent: SolanaAgentKit,
+    dstOwner: PublicKey,
+    amount: number,
+  ): Promise<string> {
+    return fluxbeamTransferSol(agent, dstOwner, amount);
+  }
+
+  async fluxbeamCreateMintV1(
+    agent: SolanaAgentKit,
+    name: string,
+    symbol: string,
+    decimals: number = 9,
+    uri?: string,
+    imagePath?: string,
+    initialSupply?: number,
+  ): Promise<string> {
+    return fluxbeamCreateMintV1(
+      agent,
+      name,
+      symbol,
+      decimals,
+      initialSupply,
+      imagePath,
+      uri,
+    );
+  }
+
+  async fluxbeamCreateMintV2(
+    agent: SolanaAgentKit,
+    owner: PublicKey,
+    tokenMintKeypair: Keypair,
+    name: string,
+    symbol: string,
+    totalSupply: bigint,
+    mintAuthority: PublicKey,
+    freezeAuthority: PublicKey | null,
+    decimals = 6,
+    mintTotalSupply = true,
+    priorityFee: number,
+    extensions: ExtensionConfig[],
+    description?: string,
+    metadataUri?: string,
+    imagePath?: string,
+    imageUri?: string,
+  ): Promise<string> {
+    return fluxbeamCreateMintV2(
+      agent,
+      owner,
+      tokenMintKeypair,
+      name,
+      symbol,
+      totalSupply,
+      mintAuthority,
+      freezeAuthority,
+      decimals,
+      mintTotalSupply,
+      priorityFee,
+      extensions,
+      description,
+      metadataUri,
+      imagePath,
+      imageUri,
+    );
+  }
+
+  async fluxbeamGetClaimWithheldTokens(
+    agent: SolanaAgentKit,
+    mint: PublicKey,
+    authority: PublicKey,
+    srcAccounts: PublicKey[],
+    payer?: PublicKey,
+  ): Promise<string[]> {
+    return fluxbeamGetClaimWitheldTokens(
+      agent,
+      mint,
+      authority,
+      srcAccounts,
+      payer,
+    );
+  }
+
+  async fluxbeamGetClaimWithheldTokensFromMint(
+    agent: SolanaAgentKit,
+    mint: PublicKey,
+    payer?: PublicKey,
+  ): Promise<string> {
+    return fluxbeamGetClaimWitheldTokensFromMint(agent, mint, payer);
+  }
+
+  async fluxbeamGetClaimWithheldTokensToMint(
+    agent: SolanaAgentKit,
+    mint: PublicKey,
+    srcAccounts: PublicKey[],
+  ): Promise<string[]> {
+    return fluxbeamGetClaimWithheldTokensToMint(agent, mint, srcAccounts);
+  }
+
+  async fluxbeamWrapSOL(
+    agent: SolanaAgentKit,
+    amount: number,
+  ): Promise<string> {
+    return fluxbeamWrapSOL(agent, amount);
+  }
+
+  async fluxbeamUnwrapSOL(agent: SolanaAgentKit): Promise<string> {
+    return fluxbeamUnwrapSOL(agent);
   }
 }

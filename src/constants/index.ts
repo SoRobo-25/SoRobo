@@ -60,3 +60,8 @@ export const SWITCHBOARD_DEFAULT_CROSSBAR = "https://crossbar.switchboard.xyz";
 export const FEE_ACCOUNT = new PublicKey(
   "FLUXR4McuD2iXyP3wpP4XTjSWmB86ppMiyoA52UA9bKb",
 );
+
+export const FLUXBEAM_BASE_URI = "https://api.fluxbeam.xyz/v1";
+export const MEMO_PROGRAM_ID = new PublicKey(
+  "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+);

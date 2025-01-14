@@ -6,47 +6,67 @@ import {
 } from "@solana/spl-token";
 import { SolanaAgentKit } from "../agent";
 import {
+  LAMPORTS_PER_SOL,
   PublicKey,
   SystemProgram,
+  Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
 import { TOKENS } from "../constants";
-import { makeAndSendAndConfirmTransaction } from "../utils/fluxbeam_utils";
+import { sendTransaction, signTransaction } from "../utils/FluxbeamClient";
 
 export async function getWrapSOLInstructions(
   agent: SolanaAgentKit,
   owner: PublicKey,
   amount: number,
 ): Promise<TransactionInstruction[]> {
-  const ixs: TransactionInstruction[] = [];
-  const ata = getAssociatedTokenAddressSync(TOKENS.wSOL, owner, true);
-  const ataInfo = await agent.connection
-    .getTokenAccountBalance(ata)
-    .catch(() => {});
+  try {
+    const ixs: TransactionInstruction[] = [];
+    const amountInLamports = amount * LAMPORTS_PER_SOL;
 
-  if (ataInfo) {
-    if (Number(ataInfo?.value.amount) >= amount) {
+    const ata = getAssociatedTokenAddressSync(TOKENS.wSOL, owner, true);
+    const ataInfo = await agent.connection
+      .getTokenAccountBalance(ata)
+      .catch(() => null);
+    const userBalanceInLamports = await agent.connection.getBalance(owner);
+
+    const currentWSOLBalance = ataInfo ? Number(ataInfo.value.amount) : 0;
+
+    if (currentWSOLBalance >= amountInLamports) {
       return ixs;
     }
-  }
+    // if the amount of WSOL already in the wallet is more than the amount we want to wrap then we return
+    // an empty array of instructions
+    if (!ataInfo) {
+      ixs.push(
+        createAssociatedTokenAccountInstruction(owner, ata, owner, TOKENS.wSOL),
+      );
+    }
 
-  if (!ataInfo) {
-    ixs.push(
-      createAssociatedTokenAccountInstruction(owner, ata, owner, TOKENS.wSOL),
+    const requiredLamports = amountInLamports - currentWSOLBalance;
+    if (requiredLamports > 0) {
+      if (requiredLamports > userBalanceInLamports) {
+        throw new Error(
+          "Insufficient SOL balance to wrap the requested amount.",
+        );
+      }
+
+      // Add transfer and sync instructions
+      ixs.push(
+        SystemProgram.transfer({
+          fromPubkey: owner,
+          toPubkey: ata,
+          lamports: requiredLamports,
+        }),
+        createSyncNativeInstruction(ata),
+      );
+    }
+    return ixs;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to generate wrap SOL instructions: ${error.message}`,
     );
   }
-  if (amount > 0) {
-    ixs.push(
-      SystemProgram.transfer({
-        fromPubkey: owner,
-        toPubkey: ata,
-        lamports: amount - Number(ataInfo?.value.amount || 0),
-      }),
-      createSyncNativeInstruction(ata),
-    );
-  }
-
-  return ixs;
 }
 
 export function getUnwrapSOLInstruction(
@@ -59,10 +79,10 @@ export function getUnwrapSOLInstruction(
 /**
  * Wraps SOL to wSOL for the specified amount
  * @param agent SolanaAgentKit instance
- * @param amount Amount of SOL to wrap (in lamports)
+ * @param amount Amount of SOL to wrap (in SOL)
  * @returns Transaction signature
  */
-export async function wrapSOL(
+export async function fluxbeamWrapSOL(
   agent: SolanaAgentKit,
   amount: number,
 ): Promise<string> {
@@ -77,12 +97,13 @@ export async function wrapSOL(
       throw new Error("No wrap instructions needed");
     }
 
-    return await makeAndSendAndConfirmTransaction(
-      agent.connection,
-      instructions,
-      [agent.wallet],
-      agent.wallet,
-    );
+    const transaction = new Transaction().add(...instructions);
+
+    const txn = await signTransaction(agent, transaction);
+
+    const response = await sendTransaction(agent, txn);
+
+    return response.signature;
   } catch (error: any) {
     throw new Error(`SOL wrapping failed: ${error.message}`);
   }
@@ -93,16 +114,19 @@ export async function wrapSOL(
  * @param agent SolanaAgentKit instance
  * @returns Transaction signature
  */
-export async function unwrapSOL(agent: SolanaAgentKit): Promise<string> {
+export async function fluxbeamUnwrapSOL(
+  agent: SolanaAgentKit,
+): Promise<string> {
   try {
     const instruction = getUnwrapSOLInstruction(agent.wallet_address);
 
-    return await makeAndSendAndConfirmTransaction(
-      agent.connection,
-      [instruction],
-      [agent.wallet],
-      agent.wallet,
-    );
+    const transaction = new Transaction().add(instruction);
+
+    const txn = await signTransaction(agent, transaction);
+
+    const response = await sendTransaction(agent, txn);
+
+    return response.signature;
   } catch (error: any) {
     throw new Error(`SOL unwrapping failed: ${error.message}`);
   }
