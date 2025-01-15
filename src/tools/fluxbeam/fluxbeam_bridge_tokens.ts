@@ -1,11 +1,6 @@
 /* eslint-disable no-console */
-import {
-  fetchQuote,
-  swapFromSolana,
-  Quote,
-  SolanaTransactionSigner,
-} from "@mayanfinance/swap-sdk";
-import { SolanaAgentKit } from "../agent";
+import { fetchQuote, swapFromSolana } from "@mayanfinance/swap-sdk";
+import { SolanaAgentKit } from "../../agent";
 import { Transaction, VersionedTransaction } from "@solana/web3.js";
 
 export enum Chain {

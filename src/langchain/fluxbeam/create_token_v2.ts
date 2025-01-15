@@ -2,9 +2,9 @@ import { PublicKey } from "@solana/web3.js";
 import { Tool } from "langchain/tools";
 import { SolanaAgentKit } from "../../agent";
 
-export class SolanaFluxbeamCreateMintV2Tool extends Tool {
-  name = "solana_create_mint_v2";
-  description = `This tool creates a mint on the Solana blockchain (version 2).
+export class SolanaFluxbeamCreateTokenV2Tool extends Tool {
+  name = "solana_create_token_v2";
+  description = `This tool creates a token2022 token on the Solana blockchain.
 
   Inputs (input is a JSON string):
   owner: string, e.g., "OwnerPublicKey" (required)
@@ -32,7 +32,7 @@ export class SolanaFluxbeamCreateMintV2Tool extends Tool {
     try {
       const parsedInput = JSON.parse(input);
 
-      const signature = await this.solanaKit.fluxbeamCreateMintV2(
+      const signature = await this.solanaKit.fluxbeamCreateTokenV2(
         this.solanaKit,
         new PublicKey(parsedInput.owner),
         parsedInput.tokenMintKeypair,
@@ -52,7 +52,7 @@ export class SolanaFluxbeamCreateMintV2Tool extends Tool {
 
       return JSON.stringify({
         status: "success",
-        message: "Mint created successfully",
+        message: "Token created successfully",
         transaction: signature,
       });
     } catch (error: any) {

@@ -1,5 +1,4 @@
-import { web3 } from "@coral-xyz/anchor";
-import { SolanaAgentKit } from "../agent";
+import { SolanaAgentKit } from "../../agent";
 import {
   createAssociatedTokenAccountInstruction,
   createHarvestWithheldTokensToMintInstruction,
@@ -13,7 +12,7 @@ import {
   getAssociatedTokenPDA,
   sendTransaction,
   signTransaction,
-} from "../utils/FluxbeamClient";
+} from "../../utils/FluxbeamClient";
 import { PublicKey, Transaction } from "@solana/web3.js";
 
 /**

@@ -1,6 +1,6 @@
 import { VersionedTransaction, PublicKey } from "@solana/web3.js";
-import { SolanaAgentKit } from "../index";
-import { FLUXBEAM_BASE_URI, TOKENS } from "../constants";
+import { SolanaAgentKit } from "../../index";
+import { FLUXBEAM_BASE_URI, TOKENS } from "../../constants";
 import { getMint } from "@solana/spl-token";
 
 /**

@@ -10,9 +10,9 @@ import {
   getAssociatedTokenAddressSync,
   TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
-import { SolanaAgentKit } from "../agent";
-import { MEMO_PROGRAM_ID } from "../constants";
-import { signTransaction, sendTransaction } from "../utils/FluxbeamClient";
+import { SolanaAgentKit } from "../../agent";
+import { MEMO_PROGRAM_ID } from "../../constants";
+import { signTransaction, sendTransaction } from "../../utils/FluxbeamClient";
 
 const FEE_ACCOUNT = new PublicKey(
   "FEE1M4bRtos7Yi8cni9s6zpxDfZTSsARwrhqMJMLLKhv",

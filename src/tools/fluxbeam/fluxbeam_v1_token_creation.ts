@@ -3,7 +3,7 @@ import {
   mintV1,
   TokenStandard,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { SolanaAgentKit } from "../agent";
+import { SolanaAgentKit } from "../../agent";
 import {
   fromWeb3JsKeypair,
   fromWeb3JsPublicKey,
@@ -13,7 +13,7 @@ import { mplToolbox } from "@metaplex-foundation/mpl-toolbox";
 import { generateSigner, keypairIdentity } from "@metaplex-foundation/umi";
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys";
 import * as bs58 from "bs58";
-import { uploadImage } from "../utils/FluxbeamClient";
+import { uploadImage } from "../../utils/FluxbeamClient";
 /**
  * Create a new SPL V1 token
  * @param agent SolanaAgentKit instance
@@ -25,7 +25,7 @@ import { uploadImage } from "../utils/FluxbeamClient";
  * @param uri URI for the image (optional)
  * @returns transaction signature
  */
-export async function fluxbeamCreateMintV1(
+export async function fluxbeamCreateTokenV1(
   agent: SolanaAgentKit,
   name: string,
   symbol: string,

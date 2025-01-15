@@ -35,7 +35,9 @@ export async function getAssociatedTokenPDA(
 export async function accountExists(agent: SolanaAgentKit, account: PublicKey) {
   const acc = await agent.connection
     .getAccountInfo(account, "confirmed")
-    .catch((e) => {});
+    .catch((e) => {
+      throw Error(`an error occurred: ${e}`);
+    });
   return !!acc;
 }
 
@@ -88,6 +90,7 @@ export async function sendTransaction(
 
     const resp = await response.json();
 
+    // eslint-disable-next-line no-console
     console.log(`https://solscan.io/tx/${resp.signature}`);
 
     return resp;

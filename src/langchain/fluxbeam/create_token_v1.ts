@@ -1,9 +1,9 @@
 import { Tool } from "langchain/tools";
 import { SolanaAgentKit } from "../../agent";
 
-export class SolanaFluxbeamCreateMintV1Tool extends Tool {
-  name = "solana_create_mint_v1";
-  description = `This tool creates a mint on the Solana blockchain.
+export class SolanaFluxbeamCreateTokenV1Tool extends Tool {
+  name = "solana_create_token_v1";
+  description = `This tool creates a legacy SPL token on the Solana blockchain.
 
     Inputs (input is a JSON string):
     name: string, token name (required)
@@ -22,7 +22,7 @@ export class SolanaFluxbeamCreateMintV1Tool extends Tool {
     try {
       const parsedInput = JSON.parse(input);
 
-      const signature = await this.solanaKit.fluxbeamCreateMintV1(
+      const signature = await this.solanaKit.fluxbeamCreateTokenV1(
         this.solanaKit,
         parsedInput.name,
         parsedInput.symbol,
@@ -34,7 +34,7 @@ export class SolanaFluxbeamCreateMintV1Tool extends Tool {
 
       return JSON.stringify({
         status: "success",
-        message: "Mint created successfully",
+        message: "Token created successfully",
         transaction: signature,
       });
     } catch (error: any) {

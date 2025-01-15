@@ -1,4 +1,4 @@
-import { SolanaAgentKit } from "../agent";
+import { SolanaAgentKit } from "../../agent";
 import {
   TOKEN_2022_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
@@ -10,7 +10,7 @@ import {
   getAssociatedTokenPDA,
   sendTransaction,
   signTransaction,
-} from "../utils/FluxbeamClient";
+} from "../../utils/FluxbeamClient";
 import {
   LAMPORTS_PER_SOL,
   PublicKey,

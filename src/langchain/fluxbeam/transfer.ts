@@ -1,4 +1,3 @@
-import { TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 import { PublicKey } from "@solana/web3.js";
 import { Tool } from "langchain/tools";
 import { SolanaAgentKit } from "../../agent";

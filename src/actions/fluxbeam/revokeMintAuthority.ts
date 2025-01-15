@@ -2,7 +2,7 @@ import { AuthorityType } from "@solana/spl-token";
 import { PublicKey } from "@solana/web3.js";
 import { z } from "zod";
 import { SolanaAgentKit } from "../../agent";
-import { fluxbeamRevokeAuthority } from "../../tools/fluxbeam_token_minting_controls";
+import { fluxbeamRevokeAuthority } from "../../tools/fluxbeam/fluxbeam_token_minting_controls";
 import { Action } from "../../types";
 
 // Revoke Authority Action

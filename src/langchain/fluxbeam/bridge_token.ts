@@ -1,6 +1,6 @@
 import { Tool } from "langchain/tools";
 import { SolanaAgentKit } from "../../agent";
-import { Chain } from "../../tools/fluxbeam_bridge_tokens";
+import { Chain } from "../../tools/fluxbeam/fluxbeam_bridge_tokens";
 
 export class SolanaFluxbeamBridgeTokensTool extends Tool {
   name = "solana_bridge_tokens";

@@ -2,7 +2,7 @@ import {
   fetchMetadataFromSeeds,
   updateV1,
 } from "@metaplex-foundation/mpl-token-metadata";
-import { SolanaAgentKit } from "../agent";
+import { SolanaAgentKit } from "../../agent";
 import { mplToolbox } from "@metaplex-foundation/mpl-toolbox";
 import { createUmi } from "@metaplex-foundation/umi-bundle-defaults";
 import {

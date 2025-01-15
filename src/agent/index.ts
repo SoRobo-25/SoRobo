@@ -1,4 +1,4 @@
-import { Connection, Keypair, PublicKey, Transaction } from "@solana/web3.js";
+import { Connection, Keypair, PublicKey } from "@solana/web3.js";
 import { BN } from "@coral-xyz/anchor";
 import bs58 from "bs58";
 import Decimal from "decimal.js";
@@ -7,9 +7,7 @@ import {
   CreateSingleOptions,
   StoreInitOptions,
 } from "@3land/listings-sdk/dist/types/implementation/implementationTypes";
-import { DEFAULT_OPTIONS } from "../constants";
 import { DEFAULT_OPTIONS, TOKENS } from "../constants";
-import { Config, FluxbeamServerResponse, TokenCheck } from "../types";
 import {
   deploy_collection,
   deploy_token,
@@ -134,8 +132,8 @@ import {
   fluxbeamGetClaimWithheldTokensToMint,
   fluxbeamGetClaimWitheldTokensFromMint,
   fluxbeamGetClaimWitheldTokens,
-  fluxbeamCreateMintV2,
-  fluxbeamCreateMintV1,
+  fluxbeamCreateTokenV2,
+  fluxbeamCreateTokenV1,
   fluxbeamTransferSol,
   fluxbeamTransferSplToken,
   fluxbeamUnwrapSOL,
@@ -166,18 +164,16 @@ import {
   SearchAssetsRpcInput,
 } from "@metaplex-foundation/digital-asset-standard-api";
 import { AlloraInference, AlloraTopic } from "@alloralabs/allora-sdk";
-import {
-  AuthorityType,
-  ExtensionType,
-  TOKEN_2022_PROGRAM_ID,
-} from "@solana/spl-token";
+import { AuthorityType } from "@solana/spl-token";
 import {
   fluxbeamMintToAccount,
   fluxbeamRevokeAuthority,
   fluxbeamSetAuthority,
-} from "../tools/fluxbeam_token_minting_controls";
-import { KeypairSigner } from "@metaplex-foundation/umi";
-import { Chain, fluxbeamBridgeTokens } from "../tools/fluxbeam_bridge_tokens";
+} from "../tools/fluxbeam/fluxbeam_token_minting_controls";
+import {
+  Chain,
+  fluxbeamBridgeTokens,
+} from "../tools/fluxbeam/fluxbeam_bridge_tokens";
 
 /**
  * Main class for interacting with Solana blockchain
@@ -1267,7 +1263,7 @@ export class SolanaAgentKit {
     return fluxbeamTransferSol(agent, dstOwner, amount);
   }
 
-  async fluxbeamCreateMintV1(
+  async fluxbeamCreateTokenV1(
     agent: SolanaAgentKit,
     name: string,
     symbol: string,
@@ -1276,7 +1272,7 @@ export class SolanaAgentKit {
     imagePath?: string,
     initialSupply?: number,
   ): Promise<string> {
-    return fluxbeamCreateMintV1(
+    return fluxbeamCreateTokenV1(
       agent,
       name,
       symbol,
@@ -1287,7 +1283,7 @@ export class SolanaAgentKit {
     );
   }
 
-  async fluxbeamCreateMintV2(
+  async fluxbeamCreateTokenV2(
     agent: SolanaAgentKit,
     owner: PublicKey,
     tokenMintKeypair: Keypair,
@@ -1305,7 +1301,7 @@ export class SolanaAgentKit {
     imagePath?: string,
     imageUri?: string,
   ): Promise<string> {
-    return fluxbeamCreateMintV2(
+    return fluxbeamCreateTokenV2(
       agent,
       owner,
       tokenMintKeypair,

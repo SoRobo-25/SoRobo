@@ -21,7 +21,7 @@ const unwrapSolAction: Action = {
     ],
   ],
   schema: z.object({}),
-  handler: async (agent: SolanaAgentKit, input: Record<string, any>) => {
+  handler: async (agent: SolanaAgentKit) => {
     const signature = await fluxbeamUnwrapSOL(agent);
     return {
       status: "success",

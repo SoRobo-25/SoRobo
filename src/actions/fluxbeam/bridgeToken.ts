@@ -1,11 +1,10 @@
-import { PublicKey } from "@solana/web3.js";
 import { Action } from "../../types/action";
 import { SolanaAgentKit } from "../../agent";
 import { z } from "zod";
 import {
   Chain,
   fluxbeamBridgeTokens,
-} from "../../tools/fluxbeam_bridge_tokens";
+} from "../../tools/fluxbeam/fluxbeam_bridge_tokens";
 
 const bridgeTokensAction: Action = {
   name: "BRIDGE_TOKENS_ACTION",

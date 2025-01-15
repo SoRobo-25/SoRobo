@@ -27,15 +27,15 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { SolanaAgentKit } from "../agent";
+import { SolanaAgentKit } from "../../agent";
 import { pack } from "@solana/spl-token-metadata";
 import { DataV2 } from "@metaplex-foundation/mpl-token-metadata";
-import { FEE_ACCOUNT } from "../constants";
+import { FEE_ACCOUNT } from "../../constants";
 import {
   sendTransaction,
   signTransaction,
   uploadImage,
-} from "../utils/FluxbeamClient";
+} from "../../utils/FluxbeamClient";
 import { none } from "@metaplex-foundation/umi-options";
 import { mplToolbox } from "@metaplex-foundation/mpl-toolbox";
 import { keypairIdentity } from "@metaplex-foundation/umi";
@@ -96,7 +96,7 @@ export class CreateMintV1 {
 
 export class CreateMintV2 extends CreateMintV1 {
   extensions: ExtensionType[] = [];
-  extensionConfig = {};
+  extensionConfig: object = {};
 
   metadata: any;
 
@@ -121,7 +121,7 @@ export class CreateMintV2 extends CreateMintV1 {
 
   addExtension(ext: ExtensionType, config: object = {}) {
     this.extensions.push(ext);
-    //@ts-ignore
+    // @ts-expect-error: TypeScript doesn't recognize 'ExtensionType' as a valid index for 'extensionConfig'
     this.extensionConfig[ext] = config;
   }
 }
@@ -134,8 +134,8 @@ async function getCreateToken2022MintTransaction(
   priorityFee: number,
 ) {
   const mintLen = getMintLen(config.extensions);
-  console.log(`this is the mintLen ${mintLen}`);
-  console.log(`this is the metadataLength ${config.metadataLength()}`);
+  // console.log(`this is the mintLen ${mintLen}`);
+  // console.log(`this is the metadataLength ${config.metadataLength()}`);
   const mintLamports = await agent.connection.getMinimumBalanceForRentExemption(
     mintLen + config.metadataLength(),
   );
@@ -180,10 +180,10 @@ async function getCreateToken2022MintTransaction(
   );
   let isDefaultFrozen = false;
   config.extensions.forEach((ext: string | number) => {
-    //@ts-ignore
+    // @ts-expect-error: TypeScript doesn't recognize 'ExtensionType' as a valid index for 'extensionConfig'
     const cfg = config.extensionConfig[ext];
     // eslint-disable-next-line no-console
-    console.log(`${ext}`, cfg);
+    // console.log(`${ext}`, cfg);
 
     switch (ext) {
       case ExtensionType.TransferFeeConfig:
@@ -358,7 +358,7 @@ async function getCreateToken2022MintTransaction(
   return transaction;
 }
 
-export async function fluxbeamCreateMintV2(
+export async function fluxbeamCreateTokenV2(
   agent: SolanaAgentKit,
   owner: PublicKey,
   tokenMint: Keypair,
@@ -454,7 +454,7 @@ export async function fluxbeamCreateMintV2(
     if (description || metadataUri) {
       config.setMetadata({
         name,
-        mint: new PublicKey("11111111111111111111111111111111"),
+        mint: new PublicKey("11111111111111111111111111111111"), //default public key
         symbol,
         uri: metadataUri,
         additionalMetadata: description ? [] : [], // { key: "description", value: description } will fix description

@@ -2,9 +2,9 @@ import { PublicKey } from "@solana/web3.js";
 import { Tool } from "langchain/tools";
 import { SolanaAgentKit } from "../../agent";
 
-export class SolanaFluxbeamUpdateMetadataTool extends Tool {
+export class SolanaFluxbeamUpdateV1MetadataTool extends Tool {
   name = "solana_update_metadata";
-  description = `This tool updates metadata for a token account.
+  description = `This tool updates metadata for a v1 (legacy) token account.
 
   Inputs (input is a JSON string):
   mint: string, e.g., "TokenMintPublicKey" (required)

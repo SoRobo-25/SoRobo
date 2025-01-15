@@ -1,7 +1,7 @@
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { z } from "zod";
 import { SolanaAgentKit } from "../../agent";
-import { ExtensionConfig, fluxbeamCreateMintV2 } from "../../tools";
+import { ExtensionConfig, fluxbeamCreateTokenV2 } from "../../tools";
 import { Action } from "../../types";
 
 // Create Mint V2 Action (continued)
@@ -30,7 +30,7 @@ const createMintV2Action: Action = {
           status: "success",
           signature: "bYx4...",
         },
-        explanation: "Create new token-2022 with extensions",
+        explanation: "Create new token-2022 token with extensions",
       },
     ],
   ],
@@ -52,7 +52,7 @@ const createMintV2Action: Action = {
     imageUri: z.string().optional(),
   }),
   handler: async (agent: SolanaAgentKit, input: Record<string, any>) => {
-    const signature = await fluxbeamCreateMintV2(
+    const signature = await fluxbeamCreateTokenV2(
       agent,
       new PublicKey(input.owner),
       input.tokenMint,

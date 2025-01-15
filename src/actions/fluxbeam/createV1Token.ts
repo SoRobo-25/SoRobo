@@ -1,11 +1,11 @@
 import { z } from "zod";
 import { SolanaAgentKit } from "../../agent";
-import { fluxbeamCreateMintV1 } from "../../tools";
+import { fluxbeamCreateTokenV1 } from "../../tools";
 import { Action } from "../../types";
 
-// Create Mint V1 Action
-const createMintV1Action: Action = {
-  name: "CREATE_MINT_V1_ACTION",
+// Create Token V1 Action
+const createTokenV1Action: Action = {
+  name: "CREATE_TOKEN_V1_ACTION",
   similes: ["create token v1", "mint new token v1", "initialize token v1"],
   description: "Creates a new SPL token with metadata (v1)",
   examples: [
@@ -35,7 +35,7 @@ const createMintV1Action: Action = {
     uri: z.string().optional(),
   }),
   handler: async (agent: SolanaAgentKit, input: Record<string, any>) => {
-    const signature = await fluxbeamCreateMintV1(
+    const signature = await fluxbeamCreateTokenV1(
       agent,
       input.name,
       input.symbol,
@@ -51,4 +51,4 @@ const createMintV1Action: Action = {
   },
 };
 
-export default createMintV1Action;
+export default createTokenV1Action;

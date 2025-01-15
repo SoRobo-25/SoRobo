@@ -1,20 +1,16 @@
-import {
-  PublicKey,
-  Transaction,
-  TransactionInstruction,
-} from "@solana/web3.js";
+import { PublicKey, Transaction } from "@solana/web3.js";
 import {
   getAssociatedTokenPDA,
   sendTransaction,
   signTransaction,
-} from "../utils/FluxbeamClient";
+} from "../../utils/FluxbeamClient";
 import {
   createBurnCheckedInstruction,
   getMint,
   TOKEN_2022_PROGRAM_ID,
   TOKEN_PROGRAM_ID,
 } from "@solana/spl-token";
-import { SolanaAgentKit } from "../agent";
+import { SolanaAgentKit } from "../../agent";
 
 /**
  * Burns a specified amount of tokens

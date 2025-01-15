@@ -13,8 +13,8 @@ import {
   Transaction,
   Keypair,
 } from "@solana/web3.js";
-import { SolanaAgentKit } from "../agent";
-import { sendTransaction, signTransaction } from "../utils/FluxbeamClient";
+import { SolanaAgentKit } from "../../agent";
+import { sendTransaction, signTransaction } from "../../utils/FluxbeamClient";
 
 /**
  * Mints tokens to the associated token account of a given owner.

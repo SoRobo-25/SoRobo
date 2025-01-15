@@ -4,7 +4,7 @@ import {
   createSyncNativeInstruction,
   getAssociatedTokenAddressSync,
 } from "@solana/spl-token";
-import { SolanaAgentKit } from "../agent";
+import { SolanaAgentKit } from "../../agent";
 import {
   LAMPORTS_PER_SOL,
   PublicKey,
@@ -12,8 +12,8 @@ import {
   Transaction,
   TransactionInstruction,
 } from "@solana/web3.js";
-import { TOKENS } from "../constants";
-import { sendTransaction, signTransaction } from "../utils/FluxbeamClient";
+import { TOKENS } from "../../constants";
+import { sendTransaction, signTransaction } from "../../utils/FluxbeamClient";
 
 export async function getWrapSOLInstructions(
   agent: SolanaAgentKit,

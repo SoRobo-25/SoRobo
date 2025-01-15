@@ -1,9 +1,7 @@
 import { VersionedTransaction, PublicKey } from "@solana/web3.js";
-import { Quote, SolanaAgentKit, TransformedResponse } from "../index";
-import { TOKENS, DEFAULT_OPTIONS } from "../constants";
+import { Quote, SolanaAgentKit } from "../../index";
+import { TOKENS, DEFAULT_OPTIONS } from "../../constants";
 import { getMint } from "@solana/spl-token";
-import { Console } from "console";
-import { sendTransaction, signTransaction } from "../utils/FluxbeamClient";
 
 function transformResponse(response: { quote: Quote }): Quote {
   // Destructure the input object to get the quote object
@@ -84,12 +82,10 @@ export async function fluxBeamSwap(
         }),
       })
     ).json();
-    console.log(`this is the transaction response ${response.transaction}`);
     // Deserialize transaction
     const swapTransactionBuf = Buffer.from(response.transaction, "base64");
     const transaction = VersionedTransaction.deserialize(swapTransactionBuf);
 
-    console.log("Transaction", transaction);
     // Sign and send transaction
     transaction.sign([agent.wallet]);
 
@@ -100,11 +96,6 @@ export async function fluxBeamSwap(
         skipPreflight: true,
       },
     );
-    // const txn = await signTransaction(agent, response.transaction);
-
-    // const resp = await sendTransaction(txn);
-
-    // return response.signature;
 
     return signature;
   } catch (error: any) {
