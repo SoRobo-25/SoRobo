@@ -114,7 +114,9 @@ import {
   SolanaUpdateDriftVaultTool,
   SolanaWithdrawFromDriftAccountTool,
   SolanaWithdrawFromDriftVaultTool,
+  SolanaProgramVerificationTool,
 } from "./index";
+import { SolanaProgramVerificationStatusTool } from "./solana";
 
 export function createSolanaTools(solanaKit: SolanaAgentKit) {
   return [
@@ -208,5 +210,7 @@ export function createSolanaTools(solanaKit: SolanaAgentKit) {
     new SolanaDriftVaultInfoTool(solanaKit),
     new SolanaWithdrawFromDriftAccountTool(solanaKit),
     new SolanaWithdrawFromDriftVaultTool(solanaKit),
+    new SolanaProgramVerificationTool(solanaKit),
+    new SolanaProgramVerificationStatusTool(solanaKit),
   ];
 }

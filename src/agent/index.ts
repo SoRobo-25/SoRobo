@@ -98,6 +98,8 @@ import {
   withdrawFromDriftVault,
   updateVaultDelegate,
   get_token_balance,
+  verifySolanaProgram,
+  getProgramVerificationStatus,
 } from "../tools";
 import {
   Config,
@@ -839,5 +841,11 @@ export class SolanaAgentKit {
   }
   async updateDriftVaultDelegate(vaultAddress: string, delegate: string) {
     return await updateVaultDelegate(this, vaultAddress, delegate);
+  }
+  async verifySolanaProgram(progamId: string, github: string, commit?: string) {
+    return await verifySolanaProgram(progamId, github, commit);
+  }
+  async getProgramVerificationStatus(programId: string) {
+    return await getProgramVerificationStatus(programId);
   }
 }
