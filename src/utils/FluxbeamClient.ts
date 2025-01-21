@@ -1,5 +1,6 @@
 import {
   getAssociatedTokenAddressSync,
+  getTokenMetadata,
   TOKEN_2022_PROGRAM_ID,
 } from "@solana/spl-token";
 import { Keypair, PublicKey, Transaction } from "@solana/web3.js";
@@ -30,6 +31,27 @@ export async function getAssociatedTokenPDA(
     allowOwnerOffCurve,
     program,
   );
+}
+
+export async function getToken22Metadata(
+  agent: SolanaAgentKit,
+  mint: PublicKey,
+) {
+  try {
+    const metadata = await getTokenMetadata(
+      agent.connection, // Connection instance
+      mint, // PubKey of the Mint Account
+      "confirmed", // Commitment, can use undefined to use default
+      TOKEN_2022_PROGRAM_ID,
+    );
+    if (metadata !== null) {
+      return metadata;
+    } else {
+      throw Error("Token metadata is null");
+    }
+  } catch (error: any) {
+    throw Error(`failed to get token metadata: ${error}`);
+  }
 }
 
 export async function accountExists(agent: SolanaAgentKit, account: PublicKey) {

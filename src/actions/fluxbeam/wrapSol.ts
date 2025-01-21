@@ -4,10 +4,10 @@ import { fluxbeamWrapSOL } from "../../tools";
 import { Action } from "../../types";
 
 // Wrap SOL Action
-const wrapSolAction: Action = {
-  name: "WRAP_SOL_ACTION",
+const fluxbeamWrapSolAction: Action = {
+  name: "FLUXBEAM_WRAP_SOL_ACTION",
   similes: ["wrap SOL", "convert SOL to wSOL", "get wrapped SOL"],
-  description: "Wraps native SOL into wrapped SOL (wSOL)",
+  description: "Wrap native SOL into wrapped SOL (wSOL)",
   examples: [
     [
       {
@@ -23,15 +23,16 @@ const wrapSolAction: Action = {
     ],
   ],
   schema: z.object({
-    amount: z.number().positive(),
+    amount: z.number().positive().describe("amount of sol to wrap"),
   }),
   handler: async (agent: SolanaAgentKit, input: Record<string, any>) => {
+    console.log(`this is the input from the action ${JSON.stringify(input)}`);
     const signature = await fluxbeamWrapSOL(agent, input.amount);
     return {
       status: "success",
-      signature,
+      signature: signature,
     };
   },
 };
 
-export default wrapSolAction;
+export default fluxbeamWrapSolAction;

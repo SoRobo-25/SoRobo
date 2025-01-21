@@ -1,6 +1,6 @@
 import { SolanaAgentKit } from "../src";
 import { TOKENS } from "../src/constants";
-import { Chain, fluxbeamBridgeTokens } from "../src/tools/fluxbeam_bridge_tokens";
+import { Chain, fluxbeamBridgeTokens } from "../src/tools/fluxbeam/fluxbeam_bridge_tokens";
 
 const testBridgeTokens = async () => {
   const agent = new SolanaAgentKit(

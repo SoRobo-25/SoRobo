@@ -115,7 +115,7 @@ export async function fluxbeamGetClaimWitheldTokens(
 }
 
 /**
- * Returns transaction to claim withheld tokens from the mint account
+ * Claims withheld tokens from the mint account
  * @agent SolanaAgentKit instance
  * @param mint Token mint address
  * @param payer

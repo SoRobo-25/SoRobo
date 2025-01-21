@@ -2,15 +2,17 @@ import { PublicKey } from "@solana/web3.js";
 import { Tool } from "langchain/tools";
 import { SolanaAgentKit } from "../../agent";
 
-export class SolanaFluxbeamUpdateV2MetadataTool extends Tool {
-  name = "solana_update_token2022_metadata";
+export class SolanaFluxbeamUpdateV2TokenMetadataTool extends Tool {
+  name = "solana_update_v2_token_metadata";
   description = `This tool updates metadata for a token using the 2022 standard.
 
   Inputs (input is a JSON string):
   mint: string, e.g., "TokenMintPublicKey" (required)
-  name: string, token name (required)
-  symbol: string, token symbol (required)
-  uri:string token uri (required)`;
+  priority fee
+  newName: string, token name (optional)
+  newSymbol: string, token symbol (optional)
+  newUri: string token uri (optional)
+  newUpdateAuthority PublicKey (optional)`;
 
   constructor(private solanaKit: SolanaAgentKit) {
     super();
@@ -21,11 +23,11 @@ export class SolanaFluxbeamUpdateV2MetadataTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = this.solanaKit.fluxbeamUpdateV2Metadata(
-        this.solanaKit,
         new PublicKey(parsedInput.mint),
-        parsedInput.name,
-        parsedInput.symbol,
-        parsedInput.uri,
+        parsedInput.newName,
+        parsedInput.newSymbol,
+        parsedInput.newUri,
+        parsedInput.newUpdateAuthority,
       );
 
       return JSON.stringify({

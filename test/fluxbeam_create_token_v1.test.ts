@@ -1,6 +1,6 @@
 import { PublicKey } from "@solana/web3.js";
 import { SolanaAgentKit } from "../src";
-import { fluxbeamCreateMintV1 } from "../src/tools";
+import { fluxbeamCreateTokenV1 } from "../src/tools";
 import { mplToolbox } from "@metaplex-foundation/mpl-toolbox";
 import { createUmi} from "@metaplex-foundation/umi-bundle-defaults";
 import { fromWeb3JsKeypair } from "@metaplex-foundation/umi-web3js-adapters";
@@ -23,7 +23,7 @@ const testCreateTokenV1 = async () => {
 
   // const uri = await uploadImage(umi, 'test/pic5.jpg');
 
-  const signature = await fluxbeamCreateMintV1(
+  const signature = await fluxbeamCreateTokenV1(
     agent,
     "test flower",
     "TSTFLWR",
@@ -35,6 +35,6 @@ const testCreateTokenV1 = async () => {
   console.log(`this is signature for create mint txn ${signature}`);
 };
 
-// createMintToken()
+
 testCreateTokenV1()
 

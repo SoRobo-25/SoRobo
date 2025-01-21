@@ -3,8 +3,8 @@ import { SolanaAgentKit } from "../src";
 import {
   CreateMintV2,
   fluxbeamBurnToken,
-  fluxbeamCreateMintV1,
-  fluxbeamCreateMintV2,
+  fluxbeamCreateTokenV1,
+  fluxbeamCreateTokenV2,
 } from "../src/tools";
 import { ExtensionType } from "@solana/spl-token";
 
@@ -22,7 +22,7 @@ const testCreateTokenV2 = async () => {
   // Pass the public key to the function
   //   const tokenMint = mintKeypair.publicKey;
 
-  const signature = await fluxbeamCreateMintV2(
+  const signature = await fluxbeamCreateTokenV2(
     agent,
     agent.wallet_address,
     mintKeypair, // we have to pass in the mint keypair to sign the txn not just the mint public key otherwise it says "Missing signature for public key"

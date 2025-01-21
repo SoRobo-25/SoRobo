@@ -23,7 +23,6 @@ export class SolanaFluxbeamCreateTokenV1Tool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamCreateTokenV1(
-        this.solanaKit,
         parsedInput.name,
         parsedInput.symbol,
         parsedInput.decimals,

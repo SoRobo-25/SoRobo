@@ -33,7 +33,6 @@ export class SolanaFluxbeamCreateTokenV2Tool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamCreateTokenV2(
-        this.solanaKit,
         new PublicKey(parsedInput.owner),
         parsedInput.tokenMintKeypair,
         parsedInput.name,

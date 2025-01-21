@@ -21,7 +21,6 @@ export class SolanaFluxbeamCreatePoolTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamCreatePool(
-        this.solanaKit,
         new PublicKey(parsedInput.token_a),
         parsedInput.token_a_amount,
         new PublicKey(parsedInput.token_b),

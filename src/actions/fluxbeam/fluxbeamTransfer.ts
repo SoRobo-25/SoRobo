@@ -4,8 +4,8 @@ import { SolanaAgentKit } from "../../agent";
 import { z } from "zod";
 import { fluxbeamTransferSplToken, fluxbeamTransferSol } from "../../tools";
 
-const transferAction: Action = {
-  name: "TRANSFER_ACTION",
+const fluxbeamTransferAction: Action = {
+  name: "FLUXBEAM_TRANSFER_ACTION",
   similes: [
     "transfer tokens",
     "send tokens",
@@ -85,4 +85,4 @@ const transferAction: Action = {
   },
 };
 
-export default transferAction;
+export default fluxbeamTransferAction;

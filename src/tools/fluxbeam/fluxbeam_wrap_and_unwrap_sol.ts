@@ -69,11 +69,47 @@ export async function getWrapSOLInstructions(
   }
 }
 
-export function getUnwrapSOLInstruction(
+export async function getUnwrapSOLInstructions(
+  agent: SolanaAgentKit,
   owner: PublicKey,
-): TransactionInstruction {
-  const ata = getAssociatedTokenAddressSync(TOKENS.wSOL, owner, true);
-  return createCloseAccountInstruction(ata, owner, owner);
+  amount: number, // Amount in SOL (not lamports)
+): Promise<TransactionInstruction[]> {
+  try {
+    const ixs: TransactionInstruction[] = [];
+    const amountInLamports = amount * LAMPORTS_PER_SOL;
+
+    const ata = getAssociatedTokenAddressSync(TOKENS.wSOL, owner, true);
+    //convert all the WSOL back to sol
+    const wsolBalance = await agent.connection
+      .getTokenAccountBalance(TOKENS.wSOL) // prob in lamports
+      .then((val) => {
+        if (!val?.value?.uiAmount) {
+          throw new Error("Failed to fetch wSOL balance");
+        }
+        return val.value.uiAmount;
+      });
+    if (wsolBalance === null || 0) {
+      throw Error("You have no WSOL to unwrap");
+    }
+    if (amount === wsolBalance) {
+      ixs.push(createCloseAccountInstruction(ata, owner, owner));
+    } else {
+      ixs.push(createCloseAccountInstruction(ata, owner, owner));
+
+      const amountToWrap = wsolBalance - amountInLamports;
+      const instructions = await getWrapSOLInstructions(
+        agent,
+        agent.wallet_address,
+        amountToWrap,
+      );
+      ixs.push(...instructions);
+    }
+    return ixs;
+  } catch (error: any) {
+    throw new Error(
+      `Failed to generate unwrap SOL instructions: ${error.message}`,
+    );
+  }
 }
 
 /**
@@ -116,11 +152,16 @@ export async function fluxbeamWrapSOL(
  */
 export async function fluxbeamUnwrapSOL(
   agent: SolanaAgentKit,
+  amount: number,
 ): Promise<string> {
   try {
-    const instruction = getUnwrapSOLInstruction(agent.wallet_address);
+    const instructions = await getUnwrapSOLInstructions(
+      agent,
+      agent.wallet_address,
+      amount,
+    );
 
-    const transaction = new Transaction().add(instruction);
+    const transaction = new Transaction().add(...instructions);
 
     const txn = await signTransaction(agent, transaction);
 

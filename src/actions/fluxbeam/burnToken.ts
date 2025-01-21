@@ -4,8 +4,8 @@ import { SolanaAgentKit } from "../../agent";
 import { z } from "zod";
 import { fluxbeamBurnToken } from "../../tools";
 
-const burnTokenAction: Action = {
-  name: "BURN_TOKEN_ACTION",
+const fluxbeamBurnTokenAction: Action = {
+  name: "FLUXBEAM_BURN_TOKEN_ACTION",
   similes: [
     "burn tokens",
     "destroy tokens",
@@ -51,4 +51,4 @@ const burnTokenAction: Action = {
   },
 };
 
-export default burnTokenAction;
+export default fluxbeamBurnTokenAction;

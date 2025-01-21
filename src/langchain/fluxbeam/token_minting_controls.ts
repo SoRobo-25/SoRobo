@@ -22,7 +22,6 @@ export class SolanaFluxbeamMintToAccountTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamMintToAccount(
-        this.solanaKit,
         new PublicKey(parsedInput.owner),
         new PublicKey(parsedInput.tokenMint),
         BigInt(parsedInput.amount),
@@ -68,7 +67,6 @@ export class SolanaFluxbeamSetAuthorityTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamSetAuthority(
-        this.solanaKit,
         new PublicKey(parsedInput.owner),
         new PublicKey(parsedInput.mint),
         parsedInput.authority as AuthorityType,
@@ -116,7 +114,6 @@ export class SolanaFluxbeamRevokeAuthorityTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamRevokeAuthority(
-        this.solanaKit,
         new PublicKey(parsedInput.owner),
         new PublicKey(parsedInput.mint),
         parsedInput.authority as AuthorityType,

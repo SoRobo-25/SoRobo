@@ -4,25 +4,29 @@ import { fluxbeamUnwrapSOL } from "../../tools";
 import { Action } from "../../types";
 
 // Unwrap SOL Action
-const unwrapSolAction: Action = {
-  name: "UNWRAP_SOL_ACTION",
+const fluxbeamUnwrapSolAction: Action = {
+  name: "FLUXBEAM_UNWRAP_SOL_ACTION",
   similes: ["unwrap SOL", "convert wSOL to SOL", "get native SOL"],
   description: "Unwraps wSOL back to native SOL",
   examples: [
     [
       {
-        input: {},
+        input: {
+          amount: 1,
+        },
         output: {
           status: "success",
-          signature: "dAz6...",
+          signature: "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
         },
         explanation: "Unwrap all wSOL to native SOL",
       },
     ],
   ],
-  schema: z.object({}),
-  handler: async (agent: SolanaAgentKit) => {
-    const signature = await fluxbeamUnwrapSOL(agent);
+  schema: z.object({
+    amount: z.number().positive(),
+  }),
+  handler: async (agent: SolanaAgentKit, input: Record<string, any>) => {
+    const signature = await fluxbeamUnwrapSOL(agent, input.amount);
     return {
       status: "success",
       signature,
@@ -30,4 +34,4 @@ const unwrapSolAction: Action = {
   },
 };
 
-export default unwrapSolAction;
+export default fluxbeamUnwrapSolAction;

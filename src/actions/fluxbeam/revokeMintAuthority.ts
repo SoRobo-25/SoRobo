@@ -6,8 +6,8 @@ import { fluxbeamRevokeAuthority } from "../../tools/fluxbeam/fluxbeam_token_min
 import { Action } from "../../types";
 
 // Revoke Authority Action
-const revokeAuthorityAction: Action = {
-  name: "REVOKE_AUTHORITY_ACTION",
+const fluxbeamRevokeMintAuthorityAction: Action = {
+  name: "FLUXBEAM_REVOKE_AUTHORITY_ACTION",
   similes: [
     "remove authority",
     "revoke token authority",
@@ -60,4 +60,4 @@ const revokeAuthorityAction: Action = {
   },
 };
 
-export default revokeAuthorityAction;
+export default fluxbeamRevokeMintAuthorityAction;

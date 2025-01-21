@@ -1,5 +1,4 @@
 
-import { PublicKey } from "@solana/web3.js";
  import { createSolanaTools, SolanaAgentKit } from "../src";
 
  import { fluxbeamWrapSOL, fluxbeamUnwrapSOL} from "../src/tools";
@@ -18,9 +17,7 @@ import { PublicKey } from "@solana/web3.js";
      0.00012
    );
 
-   const signature2 = await fluxbeamUnwrapSOL(
-     solanaAgent,
-   );
+   const signature2 = await fluxbeamUnwrapSOL(solanaAgent, 0.00012);
 
    console.log(`this is signature one ${signature1}`);
    

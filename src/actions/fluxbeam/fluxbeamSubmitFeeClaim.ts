@@ -5,8 +5,8 @@ import { fluxbeamSubmitFeeClaim } from "../../tools";
 import { Action } from "../../types";
 
 // Fee Claim Action
-const submitFeeClaimAction: Action = {
-  name: "SUBMIT_FEE_CLAIM_ACTION",
+const fluxbeamSubmitFeeClaimAction: Action = {
+  name: "FLUXBEAM_SUBMIT_FEE_CLAIM_ACTION",
   similes: ["claim fees", "collect fees", "withdraw fees"],
   description: "Claims accumulated token fees",
   examples: [
@@ -21,7 +21,7 @@ const submitFeeClaimAction: Action = {
           status: "success",
           signature: "5mRt8...",
         },
-        explanation: "Claim fees for a token mint",
+        explanation: "Claim accumulated fees for a token mint",
       },
     ],
   ],
@@ -44,4 +44,4 @@ const submitFeeClaimAction: Action = {
   },
 };
 
-export default submitFeeClaimAction;
+export default fluxbeamSubmitFeeClaimAction;

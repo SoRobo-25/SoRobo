@@ -21,7 +21,6 @@ export class SolanaFluxbeamGetClaimWithheldTokensTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signatures = await this.solanaKit.fluxbeamGetClaimWithheldTokens(
-        this.solanaKit,
         new PublicKey(parsedInput.mint),
         new PublicKey(parsedInput.authority),
         parsedInput.srcAccounts.map((acc: string) => new PublicKey(acc)),
@@ -60,7 +59,6 @@ export class SolanaFluxbeamGetClaimWithheldTokensFromMintTool extends Tool {
 
       const signature =
         await this.solanaKit.fluxbeamGetClaimWithheldTokensFromMint(
-          this.solanaKit,
           new PublicKey(parsedInput.mint),
           parsedInput.payer ? new PublicKey(parsedInput.payer) : undefined,
         );
@@ -97,7 +95,6 @@ export class SolanaFluxbeamGetClaimWithheldTokensToMintTool extends Tool {
 
       const signatures =
         await this.solanaKit.fluxbeamGetClaimWithheldTokensToMint(
-          this.solanaKit,
           new PublicKey(parsedInput.mint),
           parsedInput.srcAccounts.map((acc: string) => new PublicKey(acc)),
         );

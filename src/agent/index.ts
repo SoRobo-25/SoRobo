@@ -122,9 +122,10 @@ import {
   getPriceInference,
   getAllTopics,
   getInferenceByTopicId,
+  Chain,
+  fluxbeamBridgeTokens,
   fluxbeamBurnToken,
   fluxBeamCreatePool,
-  fluxbeamSubmitFeePayment,
   fluxbeamSubmitFeeClaim,
   fluxbeamUpdateV1Metadata,
   fluxbeamUpdateV2Metadata,
@@ -138,6 +139,9 @@ import {
   fluxbeamTransferSplToken,
   fluxbeamUnwrapSOL,
   fluxbeamWrapSOL,
+  fluxbeamMintToAccount,
+  fluxbeamRevokeAuthority,
+  fluxbeamSetAuthority,
   ExtensionConfig,
 } from "../tools";
 import {
@@ -1104,7 +1108,6 @@ export class SolanaAgentKit {
     return simulate_switchboard_feed(this, feed, crossbarUrl);
   }
   async fluxbeamBridgeTokens(
-    agent: SolanaAgentKit,
     destination: Chain,
     amount: number,
     destinationWalletAddress: string,
@@ -1113,7 +1116,7 @@ export class SolanaAgentKit {
     gasDrop?: number,
   ) {
     return fluxbeamBridgeTokens(
-      agent,
+      this,
       destination,
       destinationWalletAddress,
       fromToken,
@@ -1123,73 +1126,68 @@ export class SolanaAgentKit {
     );
   }
   async fluxbeamBurnToken(
-    agent: SolanaAgentKit,
     mint: PublicKey,
     amount: number,
     v2: boolean = true,
   ): Promise<string> {
-    return fluxbeamBurnToken(agent, mint, amount, v2);
+    return fluxbeamBurnToken(this, mint, amount, v2);
   }
   async fluxbeamCreatePool(
-    agent: SolanaAgentKit,
     token_a: PublicKey,
     token_a_amount: number,
     token_b: PublicKey,
     token_b_amount: number,
   ): Promise<string> {
     return fluxBeamCreatePool(
-      agent,
+      this,
       token_a,
       token_a_amount,
       token_b,
       token_b_amount,
     );
   }
-  async fluxbeamSubmitFeePayment(
-    agent: SolanaAgentKit,
-    quoteReq: { quote: any },
-    priorityFee: number,
-  ): Promise<string> {
-    return fluxbeamSubmitFeePayment(agent, quoteReq, priorityFee);
-  }
-
   async fluxbeamSubmitFeeClaim(
-    agent: SolanaAgentKit,
     payer: PublicKey,
     mint: PublicKey,
     priorityFee: number,
   ): Promise<string> {
-    return fluxbeamSubmitFeeClaim(agent, payer, mint, priorityFee);
+    return fluxbeamSubmitFeeClaim(this, payer, mint, priorityFee);
   }
   async fluxbeamUpdateV1Metadata(
-    agent: SolanaAgentKit,
     mint: PublicKey,
-    name: string,
-    symbol: string,
-    uri: string,
+    newName: string,
+    newSymbol: string,
+    newUri: string,
   ): Promise<string> {
-    return fluxbeamUpdateV1Metadata(agent, mint, name, symbol, uri);
+    return fluxbeamUpdateV1Metadata(this, mint, newName, newSymbol, newUri);
   }
   async fluxbeamUpdateV2Metadata(
-    agent: SolanaAgentKit,
     mint: PublicKey,
-    name: string,
-    symbol: string,
-    uri: string,
+    priorityFee: number,
+    newName?: string,
+    newSymbol?: string,
+    newUri?: string,
+    newUpdateAuthority?: PublicKey,
   ): Promise<string> {
-    return fluxbeamUpdateV2Metadata(agent, mint, name, symbol, uri);
+    return fluxbeamUpdateV2Metadata(
+      this,
+      mint,
+      priorityFee,
+      newName,
+      newSymbol,
+      newUri,
+      newUpdateAuthority,
+    );
   }
   async fluxbeamMintToAccount(
-    agent: SolanaAgentKit,
     owner: PublicKey,
     tokenMint: PublicKey,
     amount: bigint,
     v2: boolean,
   ): Promise<string> {
-    return fluxbeamMintToAccount(agent, owner, tokenMint, amount, v2);
+    return fluxbeamMintToAccount(this, owner, tokenMint, amount, v2);
   }
   async fluxbeamSetAuthority(
-    agent: SolanaAgentKit,
     owner: PublicKey,
     mint: PublicKey,
     authority: AuthorityType,
@@ -1199,7 +1197,7 @@ export class SolanaAgentKit {
     additional_signers: Keypair[] = [],
   ): Promise<string> {
     return fluxbeamSetAuthority(
-      agent,
+      this,
       owner,
       mint,
       authority,
@@ -1210,16 +1208,15 @@ export class SolanaAgentKit {
     );
   }
   fluxbeamRevokeAuthority(
-    agent: SolanaAgentKit,
     owner: PublicKey,
     mint: PublicKey,
     authority: AuthorityType,
     v2: boolean = true,
-    priorityFee: number = 100_000_000_000,
+    priorityFee: number = 100_000_000,
     additional_signers: Keypair[] = [],
   ): Promise<string> {
     return fluxbeamRevokeAuthority(
-      agent,
+      this,
       owner,
       mint,
       authority,
@@ -1229,16 +1226,14 @@ export class SolanaAgentKit {
     );
   }
   async fluxBeamSwap(
-    agent: SolanaAgentKit,
     inputMint: PublicKey = TOKENS.USDC,
     outputMint: PublicKey,
     inputAmount: number,
     slippageBps: number = DEFAULT_OPTIONS.SLIPPAGE_BPS,
   ): Promise<string> {
-    return fluxBeamSwap(agent, inputMint, outputMint, inputAmount, slippageBps);
+    return fluxBeamSwap(this, inputMint, outputMint, inputAmount, slippageBps);
   }
   async fluxbeamTransferSplToken(
-    agent: SolanaAgentKit,
     mint: PublicKey,
     dstOwner: PublicKey,
     amount: number,
@@ -1246,7 +1241,7 @@ export class SolanaAgentKit {
     allowOwnerOffCurve = false,
   ): Promise<string> {
     return fluxbeamTransferSplToken(
-      agent,
+      this,
       mint,
       dstOwner,
       amount,
@@ -1256,15 +1251,13 @@ export class SolanaAgentKit {
   }
 
   async fluxbeamTransferSol(
-    agent: SolanaAgentKit,
     dstOwner: PublicKey,
     amount: number,
   ): Promise<string> {
-    return fluxbeamTransferSol(agent, dstOwner, amount);
+    return fluxbeamTransferSol(this, dstOwner, amount);
   }
 
   async fluxbeamCreateTokenV1(
-    agent: SolanaAgentKit,
     name: string,
     symbol: string,
     decimals: number = 9,
@@ -1273,7 +1266,7 @@ export class SolanaAgentKit {
     initialSupply?: number,
   ): Promise<string> {
     return fluxbeamCreateTokenV1(
-      agent,
+      this,
       name,
       symbol,
       decimals,
@@ -1284,7 +1277,6 @@ export class SolanaAgentKit {
   }
 
   async fluxbeamCreateTokenV2(
-    agent: SolanaAgentKit,
     owner: PublicKey,
     tokenMintKeypair: Keypair,
     name: string,
@@ -1302,7 +1294,7 @@ export class SolanaAgentKit {
     imageUri?: string,
   ): Promise<string> {
     return fluxbeamCreateTokenV2(
-      agent,
+      this,
       owner,
       tokenMintKeypair,
       name,
@@ -1322,14 +1314,13 @@ export class SolanaAgentKit {
   }
 
   async fluxbeamGetClaimWithheldTokens(
-    agent: SolanaAgentKit,
     mint: PublicKey,
     authority: PublicKey,
     srcAccounts: PublicKey[],
     payer?: PublicKey,
   ): Promise<string[]> {
     return fluxbeamGetClaimWitheldTokens(
-      agent,
+      this,
       mint,
       authority,
       srcAccounts,
@@ -1338,29 +1329,24 @@ export class SolanaAgentKit {
   }
 
   async fluxbeamGetClaimWithheldTokensFromMint(
-    agent: SolanaAgentKit,
     mint: PublicKey,
     payer?: PublicKey,
   ): Promise<string> {
-    return fluxbeamGetClaimWitheldTokensFromMint(agent, mint, payer);
+    return fluxbeamGetClaimWitheldTokensFromMint(this, mint, payer);
   }
 
   async fluxbeamGetClaimWithheldTokensToMint(
-    agent: SolanaAgentKit,
     mint: PublicKey,
     srcAccounts: PublicKey[],
   ): Promise<string[]> {
-    return fluxbeamGetClaimWithheldTokensToMint(agent, mint, srcAccounts);
+    return fluxbeamGetClaimWithheldTokensToMint(this, mint, srcAccounts);
   }
 
-  async fluxbeamWrapSOL(
-    agent: SolanaAgentKit,
-    amount: number,
-  ): Promise<string> {
-    return fluxbeamWrapSOL(agent, amount);
+  async fluxbeamWrapSOL(amount: number): Promise<string> {
+    return fluxbeamWrapSOL(this, amount);
   }
 
-  async fluxbeamUnwrapSOL(agent: SolanaAgentKit): Promise<string> {
-    return fluxbeamUnwrapSOL(agent);
+  async fluxbeamUnwrapSOL(amount: number): Promise<string> {
+    return fluxbeamUnwrapSOL(this, amount);
   }
 }

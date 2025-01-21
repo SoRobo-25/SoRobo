@@ -3,10 +3,10 @@ import { SolanaAgentKit } from "../../agent";
 
 export class SolanaFluxbeamWrapSOLTool extends Tool {
   name = "solana_fluxbeam_wrap_sol";
-  description = `This tool wraps SOL into wSOL for the specified amount in lamports.
+  description = `Wraps SOL into wSOL for the specified amount in SOL
 
   Inputs (input is a JSON string):
-  amount: number, eg 1000000 (required)`;
+  amount: number, eg 0.0012 (required)`;
 
   constructor(private solanaKit: SolanaAgentKit) {
     super();
@@ -14,19 +14,13 @@ export class SolanaFluxbeamWrapSOLTool extends Tool {
 
   protected async _call(input: string): Promise<string> {
     try {
+      console.log(`this is the input ${input}`);
       const parsedInput = JSON.parse(input);
-
-      if (!parsedInput.amount || typeof parsedInput.amount !== "number") {
-        throw new Error(
-          "Invalid input: 'amount' is required and must be a number.",
-        );
-      }
-
+      // console.log(`this is the input ${input}}`);
+      console.log(`this is the ${JSON.stringify(parsedInput)}`);
       const signature = await this.solanaKit.fluxbeamWrapSOL(
-        this.solanaKit,
         parsedInput.amount,
       );
-
       return JSON.stringify({
         status: "success",
         message: "SOL wrapped successfully",
@@ -34,6 +28,13 @@ export class SolanaFluxbeamWrapSOLTool extends Tool {
         amount: parsedInput.amount,
       });
     } catch (error: any) {
+      console.log(
+        `this is the error stringified ${JSON.stringify({
+          status: "error",
+          message: error.message,
+          code: error.code || "UNKNOWN_ERROR",
+        })}`,
+      );
       return JSON.stringify({
         status: "error",
         message: error.message,
@@ -45,15 +46,22 @@ export class SolanaFluxbeamWrapSOLTool extends Tool {
 
 export class SolanaFluxbeamUnwrapSOLTool extends Tool {
   name = "solana_fluxbeam_unwrap_sol";
-  description = `This tool unwraps wSOL back into SOL for the user's wallet. No additional inputs required.`;
+  description = `This tool unwraps wSOL back into SOL for the user's wallet.
+  
+  Inputs (input is a JSON string):
+  amount: number in SOL, eg 0.0012 (required)`;
 
   constructor(private solanaKit: SolanaAgentKit) {
     super();
   }
 
-  protected async _call(): Promise<string> {
+  protected async _call(input: string): Promise<string> {
     try {
-      const signature = await this.solanaKit.fluxbeamUnwrapSOL(this.solanaKit);
+      const parsedInput = JSON.parse(input);
+
+      const signature = await this.solanaKit.fluxbeamUnwrapSOL(
+        parsedInput.amount,
+      );
 
       return JSON.stringify({
         status: "success",

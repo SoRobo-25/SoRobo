@@ -6,8 +6,8 @@ import {
   fluxbeamBridgeTokens,
 } from "../../tools/fluxbeam/fluxbeam_bridge_tokens";
 
-const bridgeTokensAction: Action = {
-  name: "BRIDGE_TOKENS_ACTION",
+const fluxbeamBridgeTokenAction: Action = {
+  name: "FLUXBEAM_BRIDGE_TOKEN_ACTION",
   similes: [
     "bridge tokens",
     "transfer across chains",
@@ -73,4 +73,4 @@ const bridgeTokensAction: Action = {
   },
 };
 
-export default bridgeTokensAction;
+export default fluxbeamBridgeTokenAction;

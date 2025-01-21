@@ -28,7 +28,6 @@ export class SolanaFluxbeamBridgeTokensTool extends Tool {
 
       // Bridge the tokens
       const signature = await this.solanaKit.fluxbeamBridgeTokens(
-        this.solanaKit,
         parsedInput.destination as Chain,
         parsedInput.destinationWalletAddress,
         parsedInput.fromToken,

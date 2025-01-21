@@ -33,6 +33,20 @@ import launchPumpfunTokenAction from "./pumpfun/launchPumpfunToken";
 import getWalletAddressAction from "./agent/getWalletAddress";
 import flashOpenTradeAction from "./flash/flashOpenTrade";
 import flashCloseTradeAction from "./flash/flashCloseTrade";
+import fluxbeamBridgeTokenAction from "./fluxbeam/bridgeToken";
+import fluxbeamBurnTokenAction from "./fluxbeam/burnToken";
+import fluxbeamCreatePoolAction from "./fluxbeam/createPool";
+import fluxbeamCreateV1TokenAction from "./fluxbeam/createV1Token";
+import fluxbeamCreateV2TokenAction from "./fluxbeam/createV2Token";
+import fluxbeamSubmitFeeClaimAction from "./fluxbeam/fluxbeamSubmitFeeClaim";
+import fluxbeamTransferAction from "./fluxbeam/fluxbeamTransfer";
+import fluxbeamMintToAccountAction from "./fluxbeam/mintToken";
+import fluxbeamRevokeMintAuthorityAction from "./fluxbeam/revokeMintAuthority";
+import fluxbeamSetMintAuthorityAction from "./fluxbeam/setMintAuthority";
+import fluxbeamUnwrapSolAction from "./fluxbeam/unwrapSol";
+import fluxbeamWrapSolAction from "./fluxbeam/wrapSol";
+import fluxbeamUpdateV1TokenMetadataAction from "./fluxbeam/updateV1TokenMetadata";
+import fluxbeamUpdateV2TokenMetadataAction from "./fluxbeam/updateV2TokenMetadata";
 import createMultisigAction from "./squads/createMultisig";
 import approveMultisigProposalAction from "./squads/approveMultisigProposal";
 import createMultisigProposalAction from "./squads/createMultisigProposal";
@@ -131,6 +145,20 @@ export const ACTIONS = {
   LAUNCH_PUMPFUN_TOKEN_ACTION: launchPumpfunTokenAction,
   FLASH_OPEN_TRADE_ACTION: flashOpenTradeAction,
   FLASH_CLOSE_TRADE_ACTION: flashCloseTradeAction,
+  FLUXBEAM_BRIDGE_TOKEN_ACTION: fluxbeamBridgeTokenAction,
+  FLUXBEAM_BURN_TOKEN_ACTION: fluxbeamBurnTokenAction,
+  FLUXBEAM_CREATE_POOL_ACTION: fluxbeamCreatePoolAction,
+  FLUXBEAM_CREATE_V1_TOKEN_ACTION: fluxbeamCreateV1TokenAction,
+  FLUXBEAM_CREATE_V2_TOKEN_ACTION: fluxbeamCreateV2TokenAction,
+  FLUXBEAM_SUBMIT_FEE_CLAIM_ACTION: fluxbeamSubmitFeeClaimAction,
+  FLUXBEAM_TRANSFER_ACTION: fluxbeamTransferAction,
+  FLUXBEAM_MINT_TOKEN_ACTION: fluxbeamMintToAccountAction,
+  FLUXBEAM_REVOKE_MINT_AUTHORITY_ACTION: fluxbeamRevokeMintAuthorityAction,
+  FLUXBEAM_SET_MINT_AUTHORITY_ACTION: fluxbeamSetMintAuthorityAction,
+  FLUXBEAM_UNWRAP_SOL_ACTION: fluxbeamUnwrapSolAction,
+  FLUXBEAM_UPDATE_V1_TOKEN_METADATA_ACTION: fluxbeamUpdateV1TokenMetadataAction,
+  FLUXBEAM_UPDATE_V2_TOKEN_METADATA_ACTION: fluxbeamUpdateV2TokenMetadataAction,
+  FLUXBEAM_WRAP_SOL_ACTION: fluxbeamWrapSolAction,
   CREATE_MULTISIG_ACTION: createMultisigAction,
   DEPOSIT_TO_MULTISIG_ACTION: depositToMultisigAction,
   TRANSFER_FROM_MULTISIG_ACTION: transferFromMultisigAction,

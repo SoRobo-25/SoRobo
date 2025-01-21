@@ -4,8 +4,8 @@ import { fluxbeamCreateTokenV1 } from "../../tools";
 import { Action } from "../../types";
 
 // Create Token V1 Action
-const createTokenV1Action: Action = {
-  name: "CREATE_TOKEN_V1_ACTION",
+const fluxbeamCreateV1TokenAction: Action = {
+  name: "FLUXBEAM_CREATE_TOKEN_V1_ACTION",
   similes: ["create token v1", "mint new token v1", "initialize token v1"],
   description: "Creates a new SPL token with metadata (v1)",
   examples: [
@@ -51,4 +51,4 @@ const createTokenV1Action: Action = {
   },
 };
 
-export default createTokenV1Action;
+export default fluxbeamCreateV1TokenAction;

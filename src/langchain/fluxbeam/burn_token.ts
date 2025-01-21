@@ -21,7 +21,6 @@ export class SolanaFluxbeamBurnTokenTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamBurnToken(
-        this.solanaKit,
         new PublicKey(parsedInput.mint),
         parsedInput.amount,
         parsedInput.v2 || true,

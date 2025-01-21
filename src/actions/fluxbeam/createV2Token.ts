@@ -4,9 +4,9 @@ import { SolanaAgentKit } from "../../agent";
 import { ExtensionConfig, fluxbeamCreateTokenV2 } from "../../tools";
 import { Action } from "../../types";
 
-// Create Mint V2 Action (continued)
-const createMintV2Action: Action = {
-  name: "CREATE_MINT_V2_ACTION",
+// Create V2 Token Action (continued)
+const fluxbeamCreateV2TokenAction: Action = {
+  name: "FLUXBEAM_CREATE_MINT_V2_ACTION",
   similes: ["create token v2", "mint new token v2", "initialize token v2"],
   description: "Creates a new Token-2022 token with extensions",
   examples: [
@@ -77,4 +77,4 @@ const createMintV2Action: Action = {
   },
 };
 
-export default createMintV2Action;
+export default fluxbeamCreateV2TokenAction;

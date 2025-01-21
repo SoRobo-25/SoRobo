@@ -1,8 +1,7 @@
 import { Keypair, PublicKey } from "@solana/web3.js";
 import { SolanaAgentKit } from "../src";
 import { TOKENS } from "../src/constants";
-import { Chain, fluxbeamBridgeTokens } from "../src/tools/fluxbeam_bridge_tokens";
-import { fluxbeamMintToAccount, fluxbeamRevokeAuthority, fluxbeamSetAuthority } from "../src/tools/fluxbeam_token_minting_controls";
+import { fluxbeamMintToAccount, fluxbeamRevokeAuthority, fluxbeamSetAuthority } from "../src/tools";
 import { AuthorityType, createMint, TOKEN_2022_PROGRAM_ID } from "@solana/spl-token";
 
 const createMintToken = async () => {

@@ -1,6 +1,6 @@
 import { PublicKey, Connection, Keypair } from "@solana/web3.js";
 import { SolanaAgentKit } from "../src";
-import { fluxBeamSwap } from "../src/tools/fluxbeam_token_swap";
+import { fluxBeamSwap } from "../src/tools";
 import { TOKENS } from "../src/constants";
 
 (async () => {

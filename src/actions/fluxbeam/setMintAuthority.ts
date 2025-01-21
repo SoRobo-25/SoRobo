@@ -6,8 +6,8 @@ import { fluxbeamSetAuthority } from "../../tools/fluxbeam/fluxbeam_token_mintin
 import { Action } from "../../types";
 
 // Set Authority Action
-const setAuthorityAction: Action = {
-  name: "SET_AUTHORITY_ACTION",
+const fluxbeamSetMintAuthorityAction: Action = {
+  name: "FLUXBEAM_SET_AUTHORITY_ACTION",
   similes: ["change authority", "update authority", "modify authority"],
   description: "Sets a new authority for a token mint",
   examples: [
@@ -59,4 +59,4 @@ const setAuthorityAction: Action = {
   },
 };
 
-export default setAuthorityAction;
+export default fluxbeamSetMintAuthorityAction;

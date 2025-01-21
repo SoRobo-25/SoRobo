@@ -128,7 +128,7 @@ export function fluxbeamRevokeAuthority(
   mint: PublicKey,
   authority: AuthorityType,
   v2: boolean = true,
-  priorityFee: number = 100_000_000,
+  priorityFee: number = 1_000_000,
   additional_signers: Keypair[] = [],
 ) {
   return fluxbeamSetAuthority(

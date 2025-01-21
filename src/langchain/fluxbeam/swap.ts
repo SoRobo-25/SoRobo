@@ -22,7 +22,6 @@ export class SolanaFluxBeamSwapTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxBeamSwap(
-        this.solanaKit,
         parsedInput.inputMint
           ? new PublicKey(parsedInput.inputMint)
           : TOKENS.USDC,

@@ -57,6 +57,7 @@ export const SWITCHBOARD_DEFAULT_CROSSBAR = "https://crossbar.switchboard.xyz";
 /**
  * Fluxbeam constants
  */
+// fluxbeam fee account
 export const FEE_ACCOUNT = new PublicKey(
   "FLUXR4McuD2iXyP3wpP4XTjSWmB86ppMiyoA52UA9bKb",
 );

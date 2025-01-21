@@ -22,7 +22,6 @@ export class SolanaFluxbeamTransferSplTokenTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamTransferSplToken(
-        this.solanaKit,
         new PublicKey(parsedInput.mint),
         new PublicKey(parsedInput.dstOwner),
         parsedInput.amount,
@@ -66,7 +65,6 @@ export class SolanaFluxbeamTransferSolTool extends Tool {
       const parsedInput = JSON.parse(input);
 
       const signature = await this.solanaKit.fluxbeamTransferSol(
-        this.solanaKit,
         new PublicKey(parsedInput.dstOwner),
         parsedInput.amount,
       );
