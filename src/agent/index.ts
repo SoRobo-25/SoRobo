@@ -117,6 +117,8 @@ import {
   get_asset,
   get_assets_by_authority,
   get_assets_by_creator,
+  createNonTransferableTokenMint,
+  mint_token2022,
   getPriceInference,
   getAllTopics,
   getInferenceByTopicId,
@@ -1032,6 +1034,32 @@ export class SolanaAgentKit {
     params: GetAssetsByCreatorRpcInput,
   ): Promise<DasApiAssetList> {
     return get_assets_by_creator(this, params);
+  }
+
+  async createNonTransferableTokenMint(
+    decimals: number,
+    tokenName: string,
+    tokenSymbol: string,
+    uri: string,
+    additionalMetadata?: [string, string][],
+  ): Promise<{ mint: PublicKey; signature: string }> {
+    return createNonTransferableTokenMint(
+      this,
+      decimals,
+      tokenName,
+      tokenSymbol,
+      uri,
+      additionalMetadata,
+    );
+  }
+
+  async mint_token2022(
+    mint: PublicKey,
+    destination: PublicKey,
+    decimals: number,
+    amount?: number,
+  ) {
+    return mint_token2022(this, mint, destination, decimals, amount);
   }
   async getPriceInference(
     tokenSymbol: string,

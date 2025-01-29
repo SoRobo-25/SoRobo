@@ -76,6 +76,8 @@ import getAssetAction from "./metaplex/getAsset";
 import getAssetsByAuthorityAction from "./metaplex/getAssetsByAuthority";
 import getAssetsByCreatorAction from "./metaplex/getAssetsByCreator";
 import getInfoAction from "./agent/get_info";
+import createNonTransferableMintAction from "./solana/token2022/create_non_transferable_token_mint";
+import mintToken2022Action from "./solana/token2022/mint_token2022";
 import getPriceInferenceAction from "./allora/getPriceInference";
 import getAllTopicsAction from "./allora/getAllTopics";
 import getInferenceByTopicIdAction from "./allora/getInferenceByTopicId";
@@ -171,6 +173,8 @@ export const ACTIONS = {
   GET_ASSET_ACTION: getAssetAction,
   GET_ASSETS_BY_AUTHORITY_ACTION: getAssetsByAuthorityAction,
   GET_ASSETS_BY_CREATOR_ACTION: getAssetsByCreatorAction,
+  CREATE_NON_TRANSFERABLE_MINT_ACTION: createNonTransferableMintAction,
+  MINT_TOKEN_2022_ACTION: mintToken2022Action,
   GET_PRICE_INFERENCE_ACTION: getPriceInferenceAction,
   GET_ALL_TOPICS_ACTION: getAllTopicsAction,
   GET_INFERENCE_BY_TOPIC_ID_ACTION: getInferenceByTopicIdAction,
