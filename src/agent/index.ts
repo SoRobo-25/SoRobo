@@ -67,6 +67,8 @@ import {
   fetchTokenDetailedReport,
   fetchPythPrice,
   fetchPythPriceFeedID,
+  swapFluxBeam,
+  createPoolFluxBeam,
   flashOpenTrade,
   flashCloseTrade,
   createMeteoraDynamicAMMPool,
@@ -697,6 +699,29 @@ export class SolanaAgentKit {
     return fetchTokenDetailedReport(mint);
   }
 
+  async swapFluxBeam(
+    outputMint: PublicKey,
+    inputAmount: number,
+    inputMint?: PublicKey,
+    slippageBps: number = DEFAULT_OPTIONS.SLIPPAGE_BPS,
+  ): Promise<string> {
+    return swapFluxBeam(this, outputMint, inputAmount, inputMint, slippageBps);
+  }
+
+  async createPoolFluxBeam(
+    token_a: PublicKey,
+    token_a_amount: number,
+    token_b: PublicKey,
+    token_b_amount: number,
+  ): Promise<string> {
+    return createPoolFluxBeam(
+      this,
+      token_a,
+      token_a_amount,
+      token_b,
+      token_b_amount,
+    );
+  }
   /**
    * Opens a new trading position on Flash.Trade
    * @param params Flash trade parameters including market, side, collateral, leverage, and pool name

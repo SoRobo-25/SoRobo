@@ -23,6 +23,7 @@ export * from "./3land";
 export * from "./tiplink";
 export * from "./sns";
 export * from "./lightprotocol";
+export * from "./fluxbeam";
 export * from "./squads";
 export * from "./meteora";
 export * from "./helius";
@@ -93,6 +94,8 @@ import {
   SolanaPerpCloseTradeTool,
   SolanaFlashOpenTrade,
   SolanaFlashCloseTrade,
+  SolanaCreatePoolFluxBeamTool,
+  SolanaSwapFluxBeamTool,
   SolanaCreate2by2Multisig,
   SolanaDepositTo2by2Multisig,
   SolanaTransferFrom2by2Multisig,
@@ -206,6 +209,8 @@ export function createSolanaTools(solanaKit: SolanaAgentKit) {
     new Solana3LandCreateCollection(solanaKit),
     new SolanaPerpOpenTradeTool(solanaKit),
     new SolanaPerpCloseTradeTool(solanaKit),
+    new SolanaCreatePoolFluxBeamTool(solanaKit),
+    new SolanaSwapFluxBeamTool(solanaKit),
     new SolanaFlashOpenTrade(solanaKit),
     new SolanaFlashCloseTrade(solanaKit),
     new SolanaCreate2by2Multisig(solanaKit),

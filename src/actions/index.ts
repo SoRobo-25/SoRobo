@@ -33,6 +33,8 @@ import launchPumpfunTokenAction from "./pumpfun/launchPumpfunToken";
 import getWalletAddressAction from "./agent/getWalletAddress";
 import flashOpenTradeAction from "./flash/flashOpenTrade";
 import flashCloseTradeAction from "./flash/flashCloseTrade";
+import fluxbeamCreatePoolAction from "./fluxbeam/fluxbeamCreatePool";
+import fluxbeamSwapAction from "./fluxbeam/fluxbeamSwapAction";
 import createMultisigAction from "./squads/createMultisig";
 import approveMultisigProposalAction from "./squads/approveMultisigProposal";
 import createMultisigProposalAction from "./squads/createMultisigProposal";
@@ -129,6 +131,8 @@ export const ACTIONS = {
     openOrcaCenteredPositionWithLiquidityAction,
   OPEN_ORCA_SINGLE_SIDED_POSITION_ACTION: openOrcaSingleSidedPositionAction,
   LAUNCH_PUMPFUN_TOKEN_ACTION: launchPumpfunTokenAction,
+  FLUXBEAM_CREATE_POOL_ACTION: fluxbeamCreatePoolAction,
+  FLUXBEAM_SWAP_ACTION: fluxbeamSwapAction,
   FLASH_OPEN_TRADE_ACTION: flashOpenTradeAction,
   FLASH_CLOSE_TRADE_ACTION: flashCloseTradeAction,
   CREATE_MULTISIG_ACTION: createMultisigAction,

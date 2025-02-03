@@ -24,6 +24,7 @@ export * from "./3land";
 export * from "./tiplink";
 export * from "./lightprotocol";
 export * from "./squads";
+export * from "./fluxbeam";
 export * from "./meteora";
 export * from "./helius";
 export * from "./voltr";
