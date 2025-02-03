@@ -117,6 +117,7 @@ import {
   get_asset,
   get_assets_by_authority,
   get_assets_by_creator,
+  getSupportedChains,
   simulate_switchboard_feed,
   swap,
   getPriceInference,
@@ -138,6 +139,8 @@ import {
   FlashCloseTradeParams,
   HeliusWebhookIdResponse,
   HeliusWebhookResponse,
+  BridgeOrderInput,
+  SupportedChainsResponse,
 } from "../types";
 import {
   DasApiAsset,
@@ -1034,6 +1037,10 @@ export class SolanaAgentKit {
     params: GetAssetsByCreatorRpcInput,
   ): Promise<DasApiAssetList> {
     return get_assets_by_creator(this, params);
+  }
+
+  async getSupportedChains(): Promise<SupportedChainsResponse> {
+    return await getSupportedChains();
   }
 
   async swap(
