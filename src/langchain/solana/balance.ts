@@ -18,7 +18,6 @@ export class SolanaBalanceTool extends Tool {
 
   protected async _call(input: string): Promise<string> {
     try {
-      console.log(`this is the input ${input}`);
       const tokenAddress = input ? new PublicKey(input) : undefined;
       const balance = await this.solanaKit.getBalance(tokenAddress);
 

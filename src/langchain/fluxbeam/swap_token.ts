@@ -3,8 +3,8 @@ import { Tool } from "langchain/tools";
 import { SolanaAgentKit } from "../../agent";
 import { TOKENS, DEFAULT_OPTIONS } from "../../constants";
 
-export class SolanaFluxBeamSwapTool extends Tool {
-  name = "solana_fluxbeam_swap";
+export class SolanaFluxbeamSwapTokenTool extends Tool {
+  name = "solana_fluxbeam_swap_token";
   description = `This tool swaps tokens using the FluxBeam DEX.
 
   Inputs (input is a JSON string):

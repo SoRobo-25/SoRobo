@@ -122,27 +122,8 @@ import {
   getPriceInference,
   getAllTopics,
   getInferenceByTopicId,
-  Chain,
-  fluxbeamBridgeTokens,
-  fluxbeamBurnToken,
   fluxBeamCreatePool,
-  fluxbeamSubmitFeeClaim,
-  fluxbeamUpdateV1Metadata,
-  fluxbeamUpdateV2Metadata,
   fluxBeamSwap,
-  fluxbeamGetClaimWithheldTokensToMint,
-  fluxbeamGetClaimWitheldTokensFromMint,
-  fluxbeamGetClaimWitheldTokens,
-  fluxbeamCreateTokenV2,
-  fluxbeamCreateTokenV1,
-  fluxbeamTransferSol,
-  fluxbeamTransferSplToken,
-  fluxbeamUnwrapSOL,
-  fluxbeamWrapSOL,
-  fluxbeamMintToAccount,
-  fluxbeamRevokeAuthority,
-  fluxbeamSetAuthority,
-  ExtensionConfig,
 } from "../tools";
 import {
   Config,
@@ -169,15 +150,6 @@ import {
 } from "@metaplex-foundation/digital-asset-standard-api";
 import { AlloraInference, AlloraTopic } from "@alloralabs/allora-sdk";
 import { AuthorityType } from "@solana/spl-token";
-import {
-  fluxbeamMintToAccount,
-  fluxbeamRevokeAuthority,
-  fluxbeamSetAuthority,
-} from "../tools/fluxbeam/fluxbeam_token_minting_controls";
-import {
-  Chain,
-  fluxbeamBridgeTokens,
-} from "../tools/fluxbeam/fluxbeam_bridge_tokens";
 
 /**
  * Main class for interacting with Solana blockchain
@@ -1107,31 +1079,6 @@ export class SolanaAgentKit {
   ): Promise<string> {
     return simulate_switchboard_feed(this, feed, crossbarUrl);
   }
-  async fluxbeamBridgeTokens(
-    destination: Chain,
-    amount: number,
-    destinationWalletAddress: string,
-    fromToken: string,
-    toToken: string,
-    gasDrop?: number,
-  ) {
-    return fluxbeamBridgeTokens(
-      this,
-      destination,
-      destinationWalletAddress,
-      fromToken,
-      toToken,
-      amount,
-      gasDrop,
-    );
-  }
-  async fluxbeamBurnToken(
-    mint: PublicKey,
-    amount: number,
-    v2: boolean = true,
-  ): Promise<string> {
-    return fluxbeamBurnToken(this, mint, amount, v2);
-  }
   async fluxbeamCreatePool(
     token_a: PublicKey,
     token_a_amount: number,
@@ -1146,85 +1093,6 @@ export class SolanaAgentKit {
       token_b_amount,
     );
   }
-  async fluxbeamSubmitFeeClaim(
-    payer: PublicKey,
-    mint: PublicKey,
-    priorityFee: number,
-  ): Promise<string> {
-    return fluxbeamSubmitFeeClaim(this, payer, mint, priorityFee);
-  }
-  async fluxbeamUpdateV1Metadata(
-    mint: PublicKey,
-    newName: string,
-    newSymbol: string,
-    newUri: string,
-  ): Promise<string> {
-    return fluxbeamUpdateV1Metadata(this, mint, newName, newSymbol, newUri);
-  }
-  async fluxbeamUpdateV2Metadata(
-    mint: PublicKey,
-    priorityFee: number,
-    newName?: string,
-    newSymbol?: string,
-    newUri?: string,
-    newUpdateAuthority?: PublicKey,
-  ): Promise<string> {
-    return fluxbeamUpdateV2Metadata(
-      this,
-      mint,
-      priorityFee,
-      newName,
-      newSymbol,
-      newUri,
-      newUpdateAuthority,
-    );
-  }
-  async fluxbeamMintToAccount(
-    owner: PublicKey,
-    tokenMint: PublicKey,
-    amount: bigint,
-    v2: boolean,
-  ): Promise<string> {
-    return fluxbeamMintToAccount(this, owner, tokenMint, amount, v2);
-  }
-  async fluxbeamSetAuthority(
-    owner: PublicKey,
-    mint: PublicKey,
-    authority: AuthorityType,
-    newAuthority: PublicKey | null,
-    v2: boolean = true,
-    priorityFee: number = 100_000_000_000,
-    additional_signers: Keypair[] = [],
-  ): Promise<string> {
-    return fluxbeamSetAuthority(
-      this,
-      owner,
-      mint,
-      authority,
-      newAuthority,
-      v2,
-      priorityFee,
-      additional_signers,
-    );
-  }
-  fluxbeamRevokeAuthority(
-    owner: PublicKey,
-    mint: PublicKey,
-    authority: AuthorityType,
-    v2: boolean = true,
-    priorityFee: number = 100_000_000,
-    additional_signers: Keypair[] = [],
-  ): Promise<string> {
-    return fluxbeamRevokeAuthority(
-      this,
-      owner,
-      mint,
-      authority,
-      v2,
-      priorityFee,
-      additional_signers,
-    );
-  }
   async fluxBeamSwap(
     inputMint: PublicKey = TOKENS.USDC,
     outputMint: PublicKey,
@@ -1232,121 +1100,5 @@ export class SolanaAgentKit {
     slippageBps: number = DEFAULT_OPTIONS.SLIPPAGE_BPS,
   ): Promise<string> {
     return fluxBeamSwap(this, inputMint, outputMint, inputAmount, slippageBps);
-  }
-  async fluxbeamTransferSplToken(
-    mint: PublicKey,
-    dstOwner: PublicKey,
-    amount: number,
-    v2: boolean = true,
-    allowOwnerOffCurve = false,
-  ): Promise<string> {
-    return fluxbeamTransferSplToken(
-      this,
-      mint,
-      dstOwner,
-      amount,
-      v2,
-      allowOwnerOffCurve,
-    );
-  }
-
-  async fluxbeamTransferSol(
-    dstOwner: PublicKey,
-    amount: number,
-  ): Promise<string> {
-    return fluxbeamTransferSol(this, dstOwner, amount);
-  }
-
-  async fluxbeamCreateTokenV1(
-    name: string,
-    symbol: string,
-    decimals: number = 9,
-    uri?: string,
-    imagePath?: string,
-    initialSupply?: number,
-  ): Promise<string> {
-    return fluxbeamCreateTokenV1(
-      this,
-      name,
-      symbol,
-      decimals,
-      initialSupply,
-      imagePath,
-      uri,
-    );
-  }
-
-  async fluxbeamCreateTokenV2(
-    owner: PublicKey,
-    tokenMintKeypair: Keypair,
-    name: string,
-    symbol: string,
-    totalSupply: bigint,
-    mintAuthority: PublicKey,
-    freezeAuthority: PublicKey | null,
-    decimals = 6,
-    mintTotalSupply = true,
-    priorityFee: number,
-    extensions: ExtensionConfig[],
-    description?: string,
-    metadataUri?: string,
-    imagePath?: string,
-    imageUri?: string,
-  ): Promise<string> {
-    return fluxbeamCreateTokenV2(
-      this,
-      owner,
-      tokenMintKeypair,
-      name,
-      symbol,
-      totalSupply,
-      mintAuthority,
-      freezeAuthority,
-      decimals,
-      mintTotalSupply,
-      priorityFee,
-      extensions,
-      description,
-      metadataUri,
-      imagePath,
-      imageUri,
-    );
-  }
-
-  async fluxbeamGetClaimWithheldTokens(
-    mint: PublicKey,
-    authority: PublicKey,
-    srcAccounts: PublicKey[],
-    payer?: PublicKey,
-  ): Promise<string[]> {
-    return fluxbeamGetClaimWitheldTokens(
-      this,
-      mint,
-      authority,
-      srcAccounts,
-      payer,
-    );
-  }
-
-  async fluxbeamGetClaimWithheldTokensFromMint(
-    mint: PublicKey,
-    payer?: PublicKey,
-  ): Promise<string> {
-    return fluxbeamGetClaimWitheldTokensFromMint(this, mint, payer);
-  }
-
-  async fluxbeamGetClaimWithheldTokensToMint(
-    mint: PublicKey,
-    srcAccounts: PublicKey[],
-  ): Promise<string[]> {
-    return fluxbeamGetClaimWithheldTokensToMint(this, mint, srcAccounts);
-  }
-
-  async fluxbeamWrapSOL(amount: number): Promise<string> {
-    return fluxbeamWrapSOL(this, amount);
-  }
-
-  async fluxbeamUnwrapSOL(amount: number): Promise<string> {
-    return fluxbeamUnwrapSOL(this, amount);
   }
 }

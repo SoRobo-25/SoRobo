@@ -1,7 +1,20 @@
-import { VersionedTransaction, PublicKey } from "@solana/web3.js";
+import {
+  VersionedTransaction,
+  PublicKey,
+  TransactionInstruction,
+} from "@solana/web3.js";
 import { Quote, SolanaAgentKit } from "../../index";
-import { TOKENS, DEFAULT_OPTIONS } from "../../constants";
-import { getMint } from "@solana/spl-token";
+import { TOKENS, DEFAULT_OPTIONS, FLUXBEAM_BASE_URI } from "../../constants";
+import {
+  createAssociatedTokenAccountInstruction,
+  createCloseAccountInstruction,
+  createSyncNativeInstruction,
+  getAssociatedTokenAddress,
+  TOKEN_2022_PROGRAM_ID,
+  TOKEN_PROGRAM_ID,
+} from "@solana/spl-token";
+import { Transaction } from "@solana/web3.js";
+import { getTokenDecimals } from "../../utils/FluxbeamUtils";
 
 function transformResponse(response: { quote: Quote }): Quote {
   // Destructure the input object to get the quote object
@@ -30,6 +43,15 @@ function transformResponse(response: { quote: Quote }): Quote {
 /**
  * Swap tokens using FluxBeam DEX
  * @param agent SolanaAgentKit instance
+ * @param inputMint Source token mint address
+ * @param outputMint Target token mint address
+ * @param inputAmount Amount to swap (in token decimals)
+ * @param slippageBps Slippage tolerance in basis points (default: 300 = 3%)
+ * @returns Transaction signature
+ */
+/**
+ * Swap tokens using FluxBeam DEX
+ * @param agent SolanaAgentKit instance
  * @param inputMint Source token mint address (defaults to USDC)
  * @param outputMint Target token mint address
  * @param inputAmount Amount to swap (in token decimals)
@@ -50,7 +72,7 @@ export async function fluxBeamSwap(
     // For native SOL, we use LAMPORTS_PER_SOL, otherwise fetch mint info
     const inputDecimals = isNativeSol
       ? 9 // SOL always has 9 decimals
-      : (await getMint(agent.connection, inputMint)).decimals;
+      : await getTokenDecimals(agent, inputMint);
 
     // Calculate the correct amount based on actual decimals
     const scaledAmount = inputAmount * Math.pow(10, inputDecimals);

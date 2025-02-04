@@ -1,14 +1,15 @@
 import { VersionedTransaction, PublicKey } from "@solana/web3.js";
 import { SolanaAgentKit } from "../../index";
 import { FLUXBEAM_BASE_URI, TOKENS } from "../../constants";
-import { getMint } from "@solana/spl-token";
+import { getTokenDecimals } from "../../utils/FluxbeamUtils";
 
 /**
  * Create a new pool using FluxBeam
  * @param agent SolanaAgentKit instance
- * @param outputMint Target token mint address
- * @param inputAmount Amount to swap (in token decimals)
- * @param inputMint Source token mint address (defaults to USDC)
+ * @param token_a token mint address of the first token
+ * @param token_a_amount Amount to swap (in token decimals)
+ * @param token_b  Source token mint address (defaults to USDC)
+ * @param token_b_amount Source token mint address (defaults to USDC)
  * @param slippageBps Slippage tolerance in basis points (default: 300 = 3%)
  * @returns Transaction signature
  */
@@ -24,14 +25,13 @@ export async function fluxBeamCreatePool(
     const isTokenA_NativeSol = token_a.equals(TOKENS.SOL);
     const tokenA_Decimals = isTokenA_NativeSol
       ? 9
-      : (await getMint(agent.connection, token_a)).decimals;
+      : await getTokenDecimals(agent, token_a);
 
     const scaledAmountTokenA = token_a_amount * Math.pow(10, tokenA_Decimals);
-
     const isTokenB_NativeSol = token_b.equals(TOKENS.SOL);
     const tokenB_Decimals = isTokenB_NativeSol
       ? 9
-      : (await getMint(agent.connection, token_b)).decimals;
+      : await getTokenDecimals(agent, token_b);
 
     const scaledAmountTokenB = token_b_amount * Math.pow(10, tokenB_Decimals);
     const response = await (
@@ -46,7 +46,6 @@ export async function fluxBeamCreatePool(
           token_b: token_b,
           token_a_amount: scaledAmountTokenA,
           token_b_amount: scaledAmountTokenB,
-          priorityFeeLamports: 500000,
         }),
       })
     ).json();
@@ -67,14 +66,8 @@ export async function fluxBeamCreatePool(
         skipPreflight: true,
       },
     );
-    const latestBlockhash = await agent.connection.getLatestBlockhash();
-    await agent.connection.confirmTransaction({
-      signature,
-      blockhash: latestBlockhash.blockhash,
-      lastValidBlockHeight: latestBlockhash.lastValidBlockHeight,
-    });
     return signature;
   } catch (error: any) {
-    throw new Error(`Swap failed: ${error.message}`);
+    throw new Error(`Failed to create fluxbeam pool: ${error.message}`);
   }
 }

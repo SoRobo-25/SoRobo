@@ -63,6 +63,9 @@ export const FEE_ACCOUNT = new PublicKey(
 );
 
 export const FLUXBEAM_BASE_URI = "https://api.fluxbeam.xyz/v1";
+export const FLUXBEAM_SWAP_PROGRAM_ID = new PublicKey(
+  "FLUXubRmkEi2q6K3Y9kBPg9248ggaZVsoSFhtJHSrm1X",
+);
 export const MEMO_PROGRAM_ID = new PublicKey(
   "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
 );

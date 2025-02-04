@@ -17,7 +17,7 @@ import { TOKENS } from "../src/constants";
   const outputMint = new PublicKey(
     "FLUXBmPhT3Fd1EDVFdg46YREqHBeNypn1h4EbnTzWERX",
   );
-  const inputAmount = 0.003; // Amount in token decimals (e.g., 1 USDC = 1)
+  const inputAmount = 0.00001; // Amount in token decimals (e.g., 1 USDC = 1)
   const slippageBps = 200; // Slippage tolerance in basis points (2%)
 
     // Call fluxBeamSwap with test parameters
@@ -31,3 +31,6 @@ import { TOKENS } from "../src/constants";
 
     console.log("Swap successful, signature:", result);
 })();
+
+
+//6DdtiLQc3519D6tyCQQphcszZtRf5ZEhichUFvJjvJc2"
