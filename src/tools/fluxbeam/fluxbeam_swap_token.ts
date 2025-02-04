@@ -1,19 +1,6 @@
-import {
-  VersionedTransaction,
-  PublicKey,
-  TransactionInstruction,
-} from "@solana/web3.js";
+import { VersionedTransaction, PublicKey } from "@solana/web3.js";
 import { Quote, SolanaAgentKit } from "../../index";
-import { TOKENS, DEFAULT_OPTIONS, FLUXBEAM_BASE_URI } from "../../constants";
-import {
-  createAssociatedTokenAccountInstruction,
-  createCloseAccountInstruction,
-  createSyncNativeInstruction,
-  getAssociatedTokenAddress,
-  TOKEN_2022_PROGRAM_ID,
-  TOKEN_PROGRAM_ID,
-} from "@solana/spl-token";
-import { Transaction } from "@solana/web3.js";
+import { TOKENS, DEFAULT_OPTIONS } from "../../constants";
 import { getTokenDecimals } from "../../utils/FluxbeamUtils";
 
 function transformResponse(response: { quote: Quote }): Quote {
@@ -40,15 +27,6 @@ function transformResponse(response: { quote: Quote }): Quote {
   };
 }
 
-/**
- * Swap tokens using FluxBeam DEX
- * @param agent SolanaAgentKit instance
- * @param inputMint Source token mint address
- * @param outputMint Target token mint address
- * @param inputAmount Amount to swap (in token decimals)
- * @param slippageBps Slippage tolerance in basis points (default: 300 = 3%)
- * @returns Transaction signature
- */
 /**
  * Swap tokens using FluxBeam DEX
  * @param agent SolanaAgentKit instance
@@ -89,7 +67,6 @@ export async function fluxBeamSwap(
     ).json();
 
     const quote = transformResponse(quoteResponse);
-    // console.log(quote);
     const response = await (
       await fetch(`${FLUXBEAM_API}/swap/transaction`, {
         method: "POST",

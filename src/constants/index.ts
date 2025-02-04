@@ -11,7 +11,6 @@ export const TOKENS = {
   jitoSOL: new PublicKey("J1toso1uCk3RLmjorhTtrVwY9HJ7X8V9yYac6Y7kGCPn"),
   bSOL: new PublicKey("bSo13r4TkiE4KumL71LsHTPpL2euBYLFx6h9HP3piy1"),
   mSOL: new PublicKey("mSoLzYCxHdYgdzU16g5QSh3i5K3z3KZK7ytfqcJm7So"),
-  wSOL: new PublicKey("So11111111111111111111111111111111111111112"),
   BONK: new PublicKey("DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263"),
 } as const;
 
@@ -65,7 +64,4 @@ export const FEE_ACCOUNT = new PublicKey(
 export const FLUXBEAM_BASE_URI = "https://api.fluxbeam.xyz/v1";
 export const FLUXBEAM_SWAP_PROGRAM_ID = new PublicKey(
   "FLUXubRmkEi2q6K3Y9kBPg9248ggaZVsoSFhtJHSrm1X",
-);
-export const MEMO_PROGRAM_ID = new PublicKey(
-  "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
 );
