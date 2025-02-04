@@ -7,7 +7,7 @@
   "scripts": {
     "build": "tsc",
     "docs": "typedoc src --out docs",
-    "test": "tsx test/fluxbeam_token_swap.test.ts",
+    "test": "tsx test/index.ts",
     "test:vercel-ai": "tsx test/agent_sdks/vercel_ai.ts",
     "generate": "tsx src/utils/keypair.ts",
     "lint": "eslint . --ext .ts",
