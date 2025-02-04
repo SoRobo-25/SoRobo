@@ -23,6 +23,7 @@ export * from "./3land";
 export * from "./tiplink";
 export * from "./sns";
 export * from "./lightprotocol";
+export * from "./realm";
 export * from "./squads";
 export * from "./meteora";
 export * from "./helius";
@@ -143,6 +144,7 @@ import {
   SolanaAlloraGetInferenceByTopicId,
   SolanaSwitchboardSimulateFeed,
 } from "./index";
+
 
 export function createSolanaTools(solanaKit: SolanaAgentKit) {
   return [
