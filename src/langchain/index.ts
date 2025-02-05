@@ -31,6 +31,7 @@ export * from "./voltr";
 export * from "./mayan";
 export * from "./allora";
 export * from "./switchboard";
+export * from "./elfa_ai";
 
 import type { SolanaAgentKit } from "../agent";
 import {
@@ -142,6 +143,13 @@ import {
   SolanaAlloraGetAllTopics,
   SolanaAlloraGetInferenceByTopicId,
   SolanaSwitchboardSimulateFeed,
+  ElfaPingTool,
+  ElfaApiKeyStatusTool,
+  ElfaGetMentionsTool,
+  ElfaTrendingTokensTool,
+  ElfaSearchMentionsTool,
+  ElfaGetTopMentionsTool,
+  ElfaAccountSmartStatsTool,
 } from "./index";
 
 export function createSolanaTools(solanaKit: SolanaAgentKit) {
@@ -254,5 +262,12 @@ export function createSolanaTools(solanaKit: SolanaAgentKit) {
     new SolanaAlloraGetAllTopics(solanaKit),
     new SolanaAlloraGetInferenceByTopicId(solanaKit),
     new SolanaAlloraGetPriceInference(solanaKit),
+    new ElfaPingTool(solanaKit),
+    new ElfaApiKeyStatusTool(solanaKit),
+    new ElfaGetMentionsTool(solanaKit),
+    new ElfaTrendingTokensTool(solanaKit),
+    new ElfaSearchMentionsTool(solanaKit),
+    new ElfaGetTopMentionsTool(solanaKit),
+    new ElfaAccountSmartStatsTool(solanaKit),
   ];
 }
