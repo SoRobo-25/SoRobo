@@ -598,11 +598,6 @@ Refer to [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on how to co
 
 Apache-2 License
 
-## Funding
-
-If you wanna give back any tokens or donations to the OSS community -- The Public Solana Agent Kit Treasury Address:
-
-Solana Network : EKHTbXpsm6YDgJzMkFxNU1LNXeWcUW7Ezf8mjUNQQ4Pa
 
 ## Security
 
