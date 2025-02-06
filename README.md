@@ -19,8 +19,7 @@ An open-source toolkit for connecting AI agents to Solana protocols. Now, any ag
 
 Anyone - whether an SF-based AI researcher or a crypto-native builder - can bring their AI agents trained with any model and seamlessly integrate with Solana.
 
-[![Run on Repl.it](https://replit.com/badge/github/sendaifun/solana-agent-kit)](https://replit.com/@sendaifun/Solana-Agent-Kit)
-> Replit template created by [Arpit Singh](https://github.com/The-x-35)
+
 
 ## 🔧 Core Blockchain Features
 
@@ -89,8 +88,6 @@ Anyone - whether an SF-based AI researcher or a crypto-native builder - can brin
   - Price feed integration for market analysis
   - Automated decision-making capabilities
 
-## 📃 Documentation
-You can view the full documentation of the kit at [docs.solanaagentkit.xyz](https://docs.solanaagentkit.xyz)
 
 ## 📦 Installation
 
@@ -558,7 +555,7 @@ const signature = await agent.swap(
 
 ### LangGraph Multi-Agent System
 
-The repository includes an advanced example of building a multi-agent system using LangGraph and Solana Agent Kit. Located in `examples/agent-kit-langgraph`, this example demonstrates:
+The repository includes an advanced example of building a multi-agent system using LangGraph and SoRobo. Located in `examples/agent-kit-langgraph`, this example demonstrates:
 
 - Multi-agent architecture using LangGraph's StateGraph
 - Specialized agents for different tasks:
