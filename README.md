@@ -592,9 +592,7 @@ Refer to [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on how to co
   <img src="https://contrib.rocks/image?repo=sendaifun/solana-agent-kit" />
 </a>
 
-## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=sendaifun/solana-agent-kit&type=Date)](https://star-history.com/#sendaifun/solana-agent-kit&Date)
 
 ## License
 
