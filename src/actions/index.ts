@@ -34,7 +34,6 @@ import getWalletAddressAction from "./agent/getWalletAddress";
 import flashOpenTradeAction from "./flash/flashOpenTrade";
 import flashCloseTradeAction from "./flash/flashCloseTrade";
 import fluxbeamCreatePoolAction from "./fluxbeam/createPool";
-import fluxbeamSwapTokenAction from "./fluxbeam/swapToken";
 import createMultisigAction from "./squads/createMultisig";
 import approveMultisigProposalAction from "./squads/approveMultisigProposal";
 import createMultisigProposalAction from "./squads/createMultisigProposal";
@@ -134,7 +133,6 @@ export const ACTIONS = {
   FLASH_OPEN_TRADE_ACTION: flashOpenTradeAction,
   FLASH_CLOSE_TRADE_ACTION: flashCloseTradeAction,
   FLUXBEAM_CREATE_POOL_ACTION: fluxbeamCreatePoolAction,
-  FLUXBEAM_SWAP_ACTION: fluxbeamSwapTokenAction,
   CREATE_MULTISIG_ACTION: createMultisigAction,
   DEPOSIT_TO_MULTISIG_ACTION: depositToMultisigAction,
   TRANSFER_FROM_MULTISIG_ACTION: transferFromMultisigAction,

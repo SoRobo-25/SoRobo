@@ -143,7 +143,6 @@ import {
   SolanaAlloraGetInferenceByTopicId,
   SolanaSwitchboardSimulateFeed,
   SolanaFluxbeamCreatePoolTool,
-  SolanaFluxbeamSwapTokenTool,
 } from "./index";
 
 export function createSolanaTools(solanaKit: SolanaAgentKit) {
@@ -257,6 +256,5 @@ export function createSolanaTools(solanaKit: SolanaAgentKit) {
     new SolanaAlloraGetInferenceByTopicId(solanaKit),
     new SolanaAlloraGetPriceInference(solanaKit),
     new SolanaFluxbeamCreatePoolTool(solanaKit),
-    new SolanaFluxbeamSwapTokenTool(solanaKit),
   ];
 }
