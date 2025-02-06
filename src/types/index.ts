@@ -300,3 +300,21 @@ export interface SwitchboardSimulateFeedResponse {
   message?: string;
   code?: string;
 }
+
+export interface FluxbeamServerResponse {
+  signature: string;
+}
+
+export interface Quote {
+  amountIn: number;
+  inputMint: string;
+  minimumOut: number;
+  outAmount: number;
+  outputMint: string;
+  pool: string;
+  program: string;
+}
+
+export interface TransformedResponse {
+  quote: Quote;
+}

@@ -7,7 +7,7 @@ import {
   CreateSingleOptions,
   StoreInitOptions,
 } from "@3land/listings-sdk/dist/types/implementation/implementationTypes";
-import { DEFAULT_OPTIONS } from "../constants";
+import { DEFAULT_OPTIONS, TOKENS } from "../constants";
 import {
   deploy_collection,
   deploy_token,
@@ -122,6 +122,7 @@ import {
   getPriceInference,
   getAllTopics,
   getInferenceByTopicId,
+  fluxBeamCreatePool,
 } from "../tools";
 import {
   Config,
@@ -147,6 +148,7 @@ import {
   SearchAssetsRpcInput,
 } from "@metaplex-foundation/digital-asset-standard-api";
 import { AlloraInference, AlloraTopic } from "@alloralabs/allora-sdk";
+import { AuthorityType } from "@solana/spl-token";
 
 /**
  * Main class for interacting with Solana blockchain
@@ -1075,5 +1077,19 @@ export class SolanaAgentKit {
     crossbarUrl: string,
   ): Promise<string> {
     return simulate_switchboard_feed(this, feed, crossbarUrl);
+  }
+  async fluxbeamCreatePool(
+    token_a: PublicKey,
+    token_a_amount: number,
+    token_b: PublicKey,
+    token_b_amount: number,
+  ): Promise<string> {
+    return fluxBeamCreatePool(
+      this,
+      token_a,
+      token_a_amount,
+      token_b,
+      token_b_amount,
+    );
   }
 }

@@ -31,7 +31,7 @@ export * from "./voltr";
 export * from "./mayan";
 export * from "./allora";
 export * from "./switchboard";
-
+export * from "./fluxbeam";
 import type { SolanaAgentKit } from "../agent";
 import {
   SolanaBalanceTool,
@@ -142,6 +142,7 @@ import {
   SolanaAlloraGetAllTopics,
   SolanaAlloraGetInferenceByTopicId,
   SolanaSwitchboardSimulateFeed,
+  SolanaFluxbeamCreatePoolTool,
 } from "./index";
 
 export function createSolanaTools(solanaKit: SolanaAgentKit) {
@@ -254,5 +255,6 @@ export function createSolanaTools(solanaKit: SolanaAgentKit) {
     new SolanaAlloraGetAllTopics(solanaKit),
     new SolanaAlloraGetInferenceByTopicId(solanaKit),
     new SolanaAlloraGetPriceInference(solanaKit),
+    new SolanaFluxbeamCreatePoolTool(solanaKit),
   ];
 }
