@@ -92,13 +92,13 @@ Anyone - whether an SF-based AI researcher or a crypto-native builder - can brin
 ## 📦 Installation
 
 ```bash
-npm install solana-agent-kit
+npm install sorobo
 ```
 
 ## Quick Start
 
 ```typescript
-import { SolanaAgentKit, createSolanaTools } from "solana-agent-kit";
+import { Sorobo, createSolanaTools } from "sorobo";
 
 // Initialize with private key and optional RPC URL
 const agent = new SolanaAgentKit(
